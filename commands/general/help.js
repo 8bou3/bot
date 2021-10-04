@@ -30,7 +30,7 @@ module.exports = {
   ],
   execute(interaction, guildData, channelData, client) {
     let color = channelData.color ? channelData.color : guildData.color;
-    const commandName = interaction.getString("command");
+    const commandName = interaction.options.getString("command");
     if (!commandName) {
       let fields = []; //Create array for fields
       const commandFolders = fs.readdirSync("./commands");
