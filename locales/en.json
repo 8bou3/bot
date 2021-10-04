@@ -27,8 +27,9 @@
   "ping": {
     "description": "Latency info",
     "embed": {
-      "description": "**Roundtrip latency:**\n> `{roundtripLatency}`\n\n**Listener latency:**\n> `{listenerLatency}`\n\n**Websocket Shards heartbeat:**\n> `{websocketShardsHeartbeat}`"
-    }
+      "description": "**Roundtrip latency:**\n> `{roundtripLatency}ms`\n\n**Listener latency:**\n> `{listenerLatency}ms`\n\n**Websocket Shards heartbeat:**\n> `{websocketShardsHeartbeat}`"
+    },
+    "websocketShardsHeartbeat": "`Shard({shardId}): {shardPing}ms`"
   },
   "help": {
     "description": "Display all commands or detailed information about a specific command",

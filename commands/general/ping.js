@@ -14,7 +14,10 @@ module.exports = {
       let websocketShardsHeartbeat = [];
       interaction.client.ws.shards.each((shard) =>
         websocketShardsHeartbeat.push(
-          `Shard(${shard.id}): ${Math.round(shard.ping)}ms`
+          i18n.__mf("ping.websocketShardsHeartbeat", {
+            shardId: shard.id,
+            shardPing: Math.round(shard.ping),
+          })
         )
       );
       let data = {
