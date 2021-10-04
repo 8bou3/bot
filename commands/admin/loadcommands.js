@@ -1,3 +1,4 @@
+const Discord = require("discord.js");
 const i18n = require("i18n");
 const fs = require("fs");
 
@@ -8,6 +9,7 @@ module.exports = {
   runPermissions: ["EMBED_LINKS", "SEND_MESSAGES"],
   description: i18n.__("owner.loadcommands.description"),
   async execute(interaction, guildData, channelData, client) {
+    interaction.deferReply()
     let data = [];
     let hiddenData = [];
     let i = 0;
@@ -21,7 +23,7 @@ module.exports = {
         .filter((file) => file.split(".").pop() === "js");
       for (const file of commandFiles) {
         if (commandFiles.length <= 0) {
-          interaction.reply(
+          interaction.editReply(
             "client couldn't find commands in commands folder.",
             {
               ephemeral: true,
@@ -54,7 +56,7 @@ module.exports = {
       ?.commands.set(hiddenData);
     console.log(hiddenCommands2);
 
-    interaction.reply(`${i} Slash commands loaded`);
+    interaction.editReply(`${i} Slash commands loaded`);
     console.log(`${i} Slash commands loaded`);
   },
 };
