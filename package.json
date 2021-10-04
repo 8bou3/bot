@@ -24,7 +24,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/8bou3/imagine-a-bot.git"
+    "url": "git+https://github.com/imagine-a-bot/bot.git"
   },
   "engines": {
     "node": "16.x",
