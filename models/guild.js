@@ -1,206 +1,60 @@
 const mongoose = require("mongoose");
 
 const guildSchema = new mongoose.Schema({
-  color: {
-    type: String,
-    default: "#000000",
-  },
-  language: {
-    type: String,
-    default: "en",
-  },
-  onlySlash: {
-    type: Boolean,
-  },
+  color: { type: String, default: "#000000" },
+  language: { type: String, default: "en" },
   logs: {
     guild: {
       channel: { type: String },
-      webhook: {
-        id: { type: String },
-        token: { type: String },
-      },
+      webhook: { id: { type: String }, token: { type: String } },
       thread: { type: String },
     },
     channels: {
       channel: { type: String },
-      webhook: {
-        id: { type: String },
-        token: { type: String },
-      },
+      webhook: { id: { type: String }, token: { type: String } },
       thread: { type: String },
     },
     threads: {
       channel: { type: String },
-      webhook: {
-        id: { type: String },
-        token: { type: String },
-      },
+      webhook: { id: { type: String }, token: { type: String } },
       thread: { type: String },
     },
     roles: {
       channel: { type: String },
-      webhook: {
-        id: { type: String },
-        token: { type: String },
-      },
-      thread: { type: String },
-    },
-    emojis: {
-      channel: { type: String },
-      webhook: {
-        id: { type: String },
-        token: { type: String },
-      },
+      webhook: { id: { type: String }, token: { type: String } },
       thread: { type: String },
     },
     members: {
       channel: { type: String },
-      webhook: {
-        id: { type: String },
-        token: { type: String },
-      },
+      webhook: { id: { type: String }, token: { type: String } },
       thread: { type: String },
     },
     moderation: {
       channel: { type: String },
-      webhook: {
-        id: { type: String },
-        token: { type: String },
-      },
-      thread: { type: String },
-    },
-    giveaways: {
-      channel: { type: String },
-      webhook: {
-        id: { type: String },
-        token: { type: String },
-      },
-      thread: { type: String },
-    },
-    errors: {
-      channel: { type: String },
-      webhook: {
-        id: { type: String },
-        token: { type: String },
-      },
-      thread: { type: String },
-    },
-    bank: {
-      channel: { type: String },
-      webhook: {
-        id: { type: String },
-        token: { type: String },
-      },
+      webhook: { id: { type: String }, token: { type: String } },
       thread: { type: String },
     },
   },
   tickets: {
-    status: {
-      type: String,
-    },
-    panels: [
-      {
-        ticketsCounter: {
-          type: Number,
-        },
-        logChannel: {
-          type: String,
-        },
-        staffRole: {
-          type: String,
-        },
-        openMessage: {
-          content: {
-            type: String,
-          },
-          embeds: [
-            {
-              title: {
-                type: String,
-              },
-              description: {
-                type: String,
-              },
-              timestamp: {
-                type: Boolean,
-                default: false,
-              },
-              color: {
-                type: String,
-              },
-              fields: [
-                {
-                  name: {
-                    type: String,
-                    required: true,
-                  },
-                  value: {
-                    type: String,
-                    required: true,
-                  },
-                  inline: {
-                    type: Boolean,
-                  },
-                },
-              ],
-            },
-          ],
-          attachment: {
-            type: String,
-          },
-        },
-        messageId: {
-          type: String,
-        },
-        channelId: {
-          type: String,
-        },
-      },
-    ],
+    ticketsCounter: { type: Number },
+    openMessage: { type: String },
+    channel: { type: String },
   },
   channels: {
-    starboard: {
-      emoji: {
-        type: String,
+    starboard: [
+      {
+        emoji: { type: String },
+        reactions: { type: Number },
+        channel: { type: String },
       },
-      reactions: {
-        type: Number,
-      },
-      channel: {
-        type: String,
-      },
-    },
-    blacklist: {
-      type: [String],
-    },
+    ],
+    blacklist: { type: [String] },
   },
   roles: {
-    sticky: {
-      type: [String],
-    },
-    administrators: {
-      type: [String],
-    },
-    moderators: {
-      type: [String],
-    },
-  },
-  currency: {
-    bank: {
-      stock: {
-        type: Number,
-        default: 0,
-      },
-    },
-  },
-  membership: {
-    tier: {
-      type: Number,
-      default: 1,
-    },
-    endTime: {
-      type: Date,
-    },
+    sticky: { type: [String] },
+    supportTeam: { type: String },
+    administrators: { type: [String] },
+    moderators: { type: [String] },
   },
   automations: [
     {
@@ -217,10 +71,7 @@ const guildSchema = new mongoose.Schema({
       },
     },
   ],
-  guildId: {
-    type: String,
-    required: true,
-  },
+  guildId: { type: String, required: true },
 });
 
 const MessageModel = (module.exports = mongoose.model("guilds", guildSchema));
