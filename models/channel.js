@@ -6,6 +6,9 @@ const channelSchema = new mongoose.Schema({
   blacklist: { type: Boolean },
   suggestions: { type: Boolean },
   ticketNumber: { type: Number },
+  threads: {
+    syncSlowmode: { type: Boolean },
+  },
   giveaways: [
     {
       messageId: { type: String },
