@@ -1,7 +1,5 @@
 const i18n = require("i18n");
 
-const { editCommandReply } = require("../../functions/load");
-
 module.exports = {
   name: "ping",
   runPermissions: ["EMBED_LINKS", "SEND_MESSAGES"],
@@ -20,40 +18,34 @@ module.exports = {
           })
         )
       );
-      let data = {
-        content: null, //Clear the message content
-        embeds: [
-          {
-            color: `${color}`,
-            description: i18n.__mf("ping.embed.description", {
-              roundtripLatency:
-                sent.createdTimestamp - interaction.createdTimestamp,
-              listenerLatency: receivedTime - interaction.createdTimestamp,
-              websocketShardsHeartbeat: websocketShardsHeartbeat.join("\n"),
-            }),
-          },
-        ],
-      };
-      editCommandReply(interaction, data, sent).catch((error) => {
-        console.warn(
-          `An error occurred whilst editing reply in '${interaction.channel.name}'`
-        );
-        console.error(error);
-        if (interaction.commandName)
-          interaction.followUp(
-            i18n.__mf("error.editingMessage", {
-              channel: interaction.channel.id,
-              errorMessage: error,
-            })
+      interaction
+        .editReply({
+          content: null, //Clear the message content
+          embeds: [
+            {
+              color: `${color}`,
+              description: i18n.__mf("ping.embed.description", {
+                roundtripLatency:
+                  sent.createdTimestamp - interaction.createdTimestamp,
+                listenerLatency: receivedTime - interaction.createdTimestamp,
+                websocketShardsHeartbeat: websocketShardsHeartbeat.join("\n"),
+              }),
+            },
+          ],
+        })
+        .catch((error) => {
+          console.warn(
+            `An error occurred whilst editing reply in '${interaction.channel.name}'`
           );
-        else
-          interaction.reply(
-            i18n.__mf("error.editingMessage", {
-              channel: interaction.channel.id,
-              errorMessage: error,
-            })
-          );
-      });
+          console.error(error);
+          if (interaction.commandName)
+            interaction.followUp(
+              i18n.__mf("error.editingMessage", {
+                channel: interaction.channel.id,
+                errorMessage: error,
+              })
+            );
+        });
     });
   },
 };
