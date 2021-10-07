@@ -4,8 +4,8 @@ module.exports = {
   name: "ping",
   runPermissions: ["EMBED_LINKS", "SEND_MESSAGES"],
   description: i18n.__("ping.description"),
-  execute(interaction, guildData, channelData, client, receivedTime) {
-    let color = channelData.color ? channelData.color : guildData.color;
+  execute(interaction, Data) {
+    let color = Data.channel.color ? Data.channel.color : Data.guild.color;
     interaction.reply("wait...").then(async (sent) => {
       //Test event sender
       if (interaction.commandName) sent = await interaction.fetchReply();
@@ -27,7 +27,7 @@ module.exports = {
               description: i18n.__mf("ping.embed.description", {
                 roundtripLatency:
                   sent.createdTimestamp - interaction.createdTimestamp,
-                listenerLatency: receivedTime - interaction.createdTimestamp,
+                listenerLatency: interaction.receivedTime - interaction.createdTimestamp,
                 websocketShardsHeartbeat: websocketShardsHeartbeat.join("\n"),
               }),
             },

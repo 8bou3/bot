@@ -7,65 +7,68 @@ const { checkPermissions } = require("../../functions/load");
 
 module.exports = {
   name: "interactionCreate",
-  async execute(interaction, client) {
-    const receivedTime = Date.now();
+  async execute(interaction) {
+    interaction.receivedTime = Date.now();
     switch (true) {
       case interaction.isCommand():
-        const command = client.commands.get(interaction.commandName);
+        await interaction.deferReply();
+        const command = interaction.client.commands.get(interaction.commandName);
         if (!command || command.disabled)
-          return interaction.reply({
+          return interaction.editReply({
             content: i18n.__("error.notAnExistingCommand"),
             ephemeral: true,
           });
+        
+        let Data = new Object
 
-        let guildData = await guildModel.findOne({
+        Data.guild = await guildModel.findOne({
           guildId: interaction.guildId,
         }); //Get guild data
-        let channelData = await channelModel.findOne({
+        Data.channel = await channelModel.findOne({
           channelId: interaction.channelId,
         }); //Get channel data
 
         if (command.guild) {
           if (!interaction.inGuild())
-            return interaction.reply({
+            return interaction.editReply({
               content: i18n.__("error.onlyGuildCommand"),
               ephemeral: true,
             });
           else {
-            if (!guildData) {
-              guildData = new guildModel({ guildId: interaction.guildId }); //Create new guild data if none
-              await guildData.save(); //Save the created guild data
+            if (!Data.guild) {
+              Data.guild = new guildModel({ guildId: interaction.guildId }); //Create new guild data if none
+              await Data.guild.save(); //Save the created guild data
             }
-            if (!channelData) {
-              channelData = new channelModel({
+            if (!Data.channel) {
+              Data.channel = new channelModel({
                 channelId: interaction.channelId,
                 guildId: interaction.guildId,
               }); //Create new channel data if none
-              await channelData.save(); //Save the created channel data
+              await Data.channel.save(); //Save the created channel data
             }
           }
         }
 
-        let color = channelData?.color ? channelData?.color : guildData?.color;
-        let language = channelData.language
-          ? channelData.language
-          : guildData.language;
+        let color = Data.channel?.color ? Data.channel?.color : Data.guild?.color;
+        let language = Data.channel.language
+          ? Data.channel.language
+          : Data.guild.language;
 
         i18n.setLocale(language); //Set the language
 
         if (
           (command.administrators &&
-            guildData.roles.administrators[0] &&
+            Data.guild.roles.administrators[0] &&
             !interaction.member.roles.cache.some((role) =>
-              guildData.roles.administrators.includes(role.id)
+              Data.guild.roles.administrators.includes(role.id)
             )) || //check the administrators roles
           (command.moderators &&
-            guildData.roles.moderators[0] &&
+            Data.guild.roles.moderators[0] &&
             !interaction.member.roles.cache.some((role) =>
-              guildData.roles.moderators.includes(role.id)
+              Data.guild.roles.moderators.includes(role.id)
             )) //And check the moderators roles
         )
-          return interaction.reply({
+          return interaction.editReply({
             embeds: [
               {
                 color: `${color}`,
@@ -96,7 +99,7 @@ module.exports = {
           checkPermissions(
             interaction,
             interaction.channel,
-            client.user,
+            interaction.client.user,
             command.permissions,
             color
           )
@@ -104,16 +107,16 @@ module.exports = {
           return; //Return if the bot is missing the required permissions for the command in this channel/guild
         //No permissions no command!!
 
-        if (!client.cooldowns.has(command.name))
-          client.cooldowns.set(command.name, new Collection()); //Create cooldowns collection for the command if none
-        const timestamps = client.cooldowns.get(command.name); //Get the cooldowns collection for this command
+        if (!interaction.client.cooldowns.has(command.name))
+          interaction.client.cooldowns.set(command.name, new Collection()); //Create cooldowns collection for the command if none
+        const timestamps = interaction.client.cooldowns.get(command.name); //Get the cooldowns collection for this command
         const cooldownAmount = (command.cooldown || 3) * 1000; //Default cooldown 3 sec
         if (timestamps.has(interaction.user.id)) {
           const expirationTime =
             timestamps.get(interaction.user.id) + cooldownAmount; //The time that the cooldown ends in
-          if (receivedTime < expirationTime) {
-            const timeLeft = (expirationTime - receivedTime) / 1000; //Time left
-            return interaction.reply({
+          if (interaction.receivedTime < expirationTime) {
+            const timeLeft = (expirationTime - interaction.receivedTime) / 1000; //Time left
+            return interaction.editReply({
               embeds: [
                 {
                   color: `${color}`,
@@ -129,19 +132,13 @@ module.exports = {
           } else timestamps.delete(interaction.user.id); //To fix any bug in cooldowns
         } //Return if the user in cooldown
 
-        timestamps.set(interaction.user.id, receivedTime); //Add user to the cooldown list
+        timestamps.set(interaction.user.id, interaction.receivedTime); //Add user to the cooldown list
         setTimeout(
           () => timestamps.delete(interaction.user.id),
           cooldownAmount
         ); //Auto remove user from cooldown list
         try {
-          command.execute(
-            interaction,
-            guildData,
-            channelData,
-            client,
-            receivedTime
-          ); //Execute the command
+          command.execute(interaction, Data); //Execute the command
           console.log(
             `${interaction.user.tag} used the '${command.name}' slash command`
           ); //<In dev version only>
@@ -150,9 +147,9 @@ module.exports = {
             `An error occurred whilst executing the '${command.name}' command`
           );
           console.error(error);
-          let errorsChannel = guildData.logs.errors.channel
+          let errorsChannel = Data.guild.logs?.errors?.channel
             ? interaction.guild.channels.cache.get(
-                guildData.logs.errors.channel
+                Data.guild.logs.errors.channel
               )
             : interaction.channel;
           errorsChannel?.send(

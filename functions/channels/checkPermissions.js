@@ -4,7 +4,7 @@ function checkPermissions(interaction, channel, user, permissions, color, reply)
   const boolean = channel.permissionsFor(user)?.has(permissions);
   if (boolean) return false;
   if (reply !== false)
-    interaction.reply({
+    interaction.editReply({
       embeds: [
         {
           color: `${color ? color : "#000000"}`,

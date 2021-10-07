@@ -8,12 +8,11 @@ module.exports = {
   hidden: true,
   runPermissions: ["EMBED_LINKS", "SEND_MESSAGES"],
   description: i18n.__("owner.loadcommands.description"),
-  async execute(interaction, guildData, channelData, client) {
-    interaction.deferReply()
+  async execute(interaction, Data) {
     let data = [];
     let hiddenData = [];
     let i = 0;
-    if (!client.application?.owner) await client.application?.fetch();
+    if (!interaction.client.application?.owner) await interaction.client.application?.fetch();
     if ("617807550993268737" !== interaction.user.id) return;
 
     const commandFolders = fs.readdirSync("./commands");
@@ -43,15 +42,15 @@ module.exports = {
       }
     }
 
-    const commands = await client.application?.commands.set(data);
+    const commands = await interaction.client.application?.commands.set(data);
     console.log(commands);
 
-    const hiddenCommands = await client.guilds.cache
+    const hiddenCommands = await interaction.client.guilds.cache
       .get("859171064679890974") //Spirit's Development server
       ?.commands.set(hiddenData);
     console.log(hiddenCommands);
 
-    const hiddenCommands2 = await client.guilds.cache
+    const hiddenCommands2 = await interaction.client.guilds.cache
       .get("856688268519276544") //Imagine a bot - Support server
       ?.commands.set(hiddenData);
     console.log(hiddenCommands2);

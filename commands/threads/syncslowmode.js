@@ -11,7 +11,7 @@ module.exports = {
       description: "True: on, false: off",
     },
   ],
-  execute(interaction, Data, client, receivedTime) {
+  execute(interaction, Data) {
     let toggle = interaction.options.getBoolean("boolean")
       ? interaction.options.getBoolean("boolean")
       : Data.channel.threads.syncSlowmode

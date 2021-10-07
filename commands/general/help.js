@@ -28,8 +28,8 @@ module.exports = {
       ],
     },
   ],
-  execute(interaction, guildData, channelData, client) {
-    let color = channelData.color ? channelData.color : guildData.color;
+  execute(interaction, Data) {
+    let color = Data.channel.color ? Data.channel.color : Data.guild.color;
     const commandName = interaction.options.getString("command");
     if (!commandName) {
       let fields = []; //Create array for fields
@@ -67,7 +67,7 @@ module.exports = {
       }
 
       interaction
-        .reply({
+        .editReply({
           embeds: [
             {
               title: i18n.__("help.embeds.menu.title"),
@@ -91,8 +91,8 @@ module.exports = {
             `Could not send help menu in ${interaction.channel.name}`
           );
           console.error(error);
-          let errorsChannel = guildData.channels.errors
-            ? interaction.guild.channels.cache.get(guildData.channels.errors)
+          let errorsChannel = Data.guild.channels.errors
+            ? interaction.guild.channels.cache.get(Data.guild.channels.errors)
             : interaction.channel;
           errorsChannel.send(
             i18n.__mf("error.sendingMessage", {
@@ -103,12 +103,12 @@ module.exports = {
         });
     } else {
       const command =
-        client.commands.get(commandName) ||
-        client.commands.find(
+        interaction.client.commands.get(commandName) ||
+        interaction.client.commands.find(
           (command) => command.aliases && command.aliases.includes(commandName)
         ); //Get the command data by name or aliases
       if (!command)
-        return interaction.reply({
+        return interaction.editReply({
           embeds: [
             {
               title: i18n.__("help.embeds.invalidCommand.title"),
@@ -157,14 +157,14 @@ module.exports = {
           note:
             command.runPermissions &&
             !interaction.channel
-              .permissionsFor(client.user)
+              .permissionsFor(interaction.client.user)
               .has(command.runPermissions)
               ? i18n.__("help.embeds.command.noRunPermissionsNote")
               : "",
         }),
       }); //Field for required bot permissions
 
-      interaction.reply({
+      interaction.editReply({
         embeds: [
           {
             title: command.name,

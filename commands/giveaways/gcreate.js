@@ -6,13 +6,12 @@ module.exports = {
   runPermissions: ["EMBED_LINKS", "SEND_MESSAGES", "ADD_REACTIONS"],
   description: i18n.__("giveaways.create.description"),
   permissions: ["MANAGE_MESSAGES", "ADD_REACTIONS"],
-  async execute(element, args, guildData, channelData, client, receivedTime) {
-    if (element.commandName) await element.defer();
-    let color = channelData.color ? channelData.color : guildData.color;
+  async execute(interaction, Data) {
+    let color = Data.channel.color ? Data.channel.color : Data.guild.color;
 
-    if (channelData.giveaways[4]) return;
+    if (Data.channel.giveaways[4]) return;
 
-    let giveawayMessageData = {
+    let giveawayMessage = await interaction.channel.send({
       embeds: [
         {
           color: `${color}`,
@@ -21,12 +20,8 @@ module.exports = {
           ),
         },
       ],
-    };
-
-    let giveawayMessage = await element.channel.send(giveawayMessageData);
+    });
     await giveawayMessage.react(`🎉`);
-
-    if (element.commandName)
-      await element.editReply(i18n.__("giveaways.create.created"));
+    await interaction.editReply(i18n.__("giveaways.create.created"));
   },
 };
