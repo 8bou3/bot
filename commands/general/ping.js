@@ -6,9 +6,9 @@ module.exports = {
   description: i18n.__("ping.description"),
   execute(interaction, Data) {
     let color = Data.channel.color ? Data.channel.color : Data.guild.color;
-    interaction.reply("wait...").then(async (sent) => {
+    interaction.editReply("wait...").then(async (sent) => {
       //Test event sender
-      if (interaction.commandName) sent = await interaction.fetchReply();
+      await interaction.fetchReply();
       let websocketShardsHeartbeat = [];
       interaction.client.ws.shards.each((shard) =>
         websocketShardsHeartbeat.push(
