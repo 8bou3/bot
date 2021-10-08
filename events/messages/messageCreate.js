@@ -1,4 +1,4 @@
 module.exports = {
-  name: "message",
+  name: "messageCreate",
   async execute(message, client) {},
 };
