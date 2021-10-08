@@ -8,7 +8,7 @@ module.exports = {
   hidden: true,
   runPermissions: ["EMBED_LINKS", "SEND_MESSAGES"],
   description: i18n.__("owner.loadcommands.description"),
-  async execute(interaction, Data) {
+  async execute(interaction) {
     let data = [];
     let hiddenData = [];
     let i = 0;
