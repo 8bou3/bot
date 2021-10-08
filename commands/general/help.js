@@ -29,7 +29,6 @@ module.exports = {
     },
   ],
   execute(interaction, Data) {
-    let color = Data.channel.color ? Data.channel.color : Data.guild.color;
     const commandName = interaction.options.getString("command");
     if (!commandName) {
       let fields = []; //Create array for fields
@@ -73,7 +72,7 @@ module.exports = {
               title: i18n.__("help.embeds.menu.title"),
               description: i18n.__("help.embeds.menu.description"),
               timestamp: Date.now(),
-              color: `${color}`,
+              color: `${Data.color}`,
               fields: fields,
               author: {
                 name: interaction.guild.name,
@@ -114,7 +113,7 @@ module.exports = {
               title: i18n.__("help.embeds.invalidCommand.title"),
               description: i18n.__("help.embeds.invalidCommand.description"),
               timestamp: Date.now(),
-              color: `${color}`,
+              color: `${Data.color}`,
             },
           ],
           ephemeral: true,
@@ -170,7 +169,7 @@ module.exports = {
             title: command.name,
             description: command.description,
             timestamp: Date.now(),
-            color: `${color}`,
+            color: `${Data.color}`,
             fields: fields,
             author: {
               name: interaction.guild.name,
