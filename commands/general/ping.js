@@ -5,8 +5,7 @@ module.exports = {
   runPermissions: ["EMBED_LINKS", "SEND_MESSAGES"],
   description: i18n.__("ping.description"),
   execute(interaction, Data) {
-    let color = Data.channel.color ? Data.channel.color : Data.guild.color;
-    interaction.editReply("wait...").then(async (sent) => {
+    interaction.reply("wait...").then(async (sent) => {
       //Test event sender
       await interaction.fetchReply();
       let websocketShardsHeartbeat = [];
@@ -23,7 +22,7 @@ module.exports = {
           content: null, //Clear the message content
           embeds: [
             {
-              color: `${color}`,
+              color: `${Data.color}`,
               description: i18n.__mf("ping.embed.description", {
                 roundtripLatency:
                   sent.createdTimestamp - interaction.createdTimestamp,
