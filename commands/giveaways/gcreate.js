@@ -7,14 +7,12 @@ module.exports = {
   description: i18n.__("giveaways.create.description"),
   permissions: ["MANAGE_MESSAGES", "ADD_REACTIONS"],
   async execute(interaction, Data) {
-    let color = Data.channel.color ? Data.channel.color : Data.guild.color;
-
     if (Data.channel.giveaways[4]) return;
 
     let giveawayMessage = await interaction.channel.send({
       embeds: [
         {
-          color: `${color}`,
+          color: `${Data.color}`,
           description: i18n.__mf(
             "giveaways.create.embeds.giveawayMessage.description"
           ),
