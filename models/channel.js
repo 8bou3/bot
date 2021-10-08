@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose')
 
 const channelSchema = new mongoose.Schema({
   color: { type: String },
@@ -7,7 +7,7 @@ const channelSchema = new mongoose.Schema({
   suggestions: { type: Boolean },
   ticketNumber: { type: Number },
   threads: {
-    syncSlowmode: { type: Boolean },
+    syncSlowmode: { type: Boolean, default: false }
   },
   giveaways: [
     {
@@ -20,23 +20,23 @@ const channelSchema = new mongoose.Schema({
       members: { type: [String] },
       tags: {
         winOnce: { type: Boolean },
-        inGuild: { type: Boolean },
-      },
-    },
+        inGuild: { type: Boolean }
+      }
+    }
   ],
   ticket: {
     status: { type: String },
     members: {
       staff: { type: String },
       members: { type: [String] },
-      speakers: { type: [String] },
-    },
+      speakers: { type: [String] }
+    }
   },
   channelId: { type: String, required: true },
-  guildId: { type: String, required: true },
-});
+  guildId: { type: String, required: true }
+})
 
 const MessageModel = (module.exports = mongoose.model(
-  "channels",
+  'channels',
   channelSchema
-));
+))
