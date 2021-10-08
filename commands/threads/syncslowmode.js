@@ -1,9 +1,11 @@
+const i18n = require("i18n")
+
 module.exports = {
   name: "syncslowmode",
   usage: "<boolean: toggle>",
   permissions: ["MANAGE_THREADS"],
   runPermissions: ["EMBED_LINKS", "SEND_MESSAGES", "MANAGE_THREADS"],
-  description: i18n.__("threads.description"),
+  description: i18n.__("syncslowmode.description"),
   options: [
     {
       type: 5,
@@ -11,7 +13,7 @@ module.exports = {
       description: "True: on, false: off",
     },
   ],
-  execute(interaction, Data) {
+  async execute(interaction, Data) {
     let toggle = interaction.options.getBoolean("boolean")
       ? interaction.options.getBoolean("boolean")
       : Data.channel.threads.syncSlowmode
