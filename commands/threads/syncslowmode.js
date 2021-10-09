@@ -15,10 +15,8 @@ module.exports = {
   ],
   async execute (interaction, Data) {
     let toggle = interaction.options.getBoolean('boolean')
-      ? interaction.options.getBoolean('boolean')
-      : Data.channel.threads.syncSlowmode
-      ? false
-      : true
+    if (toggle === null)
+      toggle = Data.channel.threads.syncSlowmode ? false : true
 
     Data.channel.threads.syncSlowmode = toggle
     await Data.channel.save()

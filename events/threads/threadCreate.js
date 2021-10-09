@@ -7,11 +7,11 @@ module.exports = {
   async execute(thread, client) {
     let Data = new Object
     Data.channel = await channelModel.findOne({
-      channelId: thread.parentID,
+      channelId: thread.parentId,
     });
     if (!Data.channel) {
       Data.channel = new channelModel({
-        channelId: thread.parentID,
+        channelId: thread.parentId,
         guildId: thread.guild.id,
       }); //Create new channel data if none
       await Data.channel.save(); //Save the created channel data
