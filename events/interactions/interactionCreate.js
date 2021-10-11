@@ -200,7 +200,7 @@ module.exports = {
 
           if (!interaction.inGuild())
             return interaction.editReply({
-              content: i18n.__("error.onlyGuildCommand"),
+              content: i18n.__("error.onlyGuildButton"),
               ephemeral: true,
             });
           else {
@@ -249,6 +249,87 @@ module.exports = {
           errorsChannel?.send(
             i18n.__mf("error.pressingButton", {
               buttonCustomId: button.customId,
+              errorMessage: error,
+            })
+          );
+        }
+        break;
+
+      case interaction.isSelectMenu():
+        try {
+          await interaction.deferReply({ ephemeral: true });
+        } catch (error) {
+          console.error(error);
+        }
+
+        const selectMenu = interaction.client.selectMenus.get(
+          interaction.customId
+        );
+        if (!selectMenu || selectMenu.disabled)
+          return interaction.editReply({
+            content: i18n.__("error.notAnExistingSelectMenu"),
+            ephemeral: true,
+          });
+
+        if (interaction.guild) {
+          Data.guild = await guildModel.findOne({
+            guildId: interaction.guildId,
+          }); //Get guild data
+          Data.channel = await channelModel.findOne({
+            channelId: interaction.channelId,
+          }); //Get channel data
+
+          if (!interaction.inGuild())
+            return interaction.editReply({
+              content: i18n.__("error.onlyGuildSelectMenu"),
+              ephemeral: true,
+            });
+          else {
+            if (!Data.guild) {
+              Data.guild = new guildModel({ guildId: interaction.guildId }); //Create new guild data if none
+              await Data.guild.save(); //Save the created guild data
+            }
+            if (!Data.channel) {
+              Data.channel = new channelModel({
+                channelId: interaction.channelId,
+                guildId: interaction.guildId,
+              }); //Create new channel data if none
+              await Data.channel.save(); //Save the created channel data
+            }
+          }
+        }
+
+        Data.color = Data.channel?.color
+          ? Data.channel.color
+          : Data?.guild.color
+          ? Data?.guild.color
+          : "#000000";
+        Data.language = Data.channel?.language
+          ? Data.channel.language
+          : Data.guild?.language
+          ? Data.guild.language
+          : "en";
+
+        i18n.setLocale(Data.language); //Set the language
+
+        try {
+          selectMenu.select(interaction, Data); //Press the selectMenu
+          console.log(
+            `${interaction.user.tag} selected the '${interaction.customId}' selectMenu`
+          ); //<In dev version only>
+        } catch (error) {
+          console.warn(
+            `An error occurred whilst selecting the '${interaction.customId}' selectMenu`
+          );
+          console.error(error);
+          let errorsChannel = Data.guild.logs?.errors?.channel
+            ? interaction.guild.channels.cache.get(
+                Data.guild.logs.errors.channel
+              )
+            : interaction.channel;
+          errorsChannel?.send(
+            i18n.__mf("error.selectingMenu", {
+              selectMenuCustomId: selectMenu.customId,
               errorMessage: error,
             })
           );

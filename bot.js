@@ -1,25 +1,28 @@
-const { Client, Collection } = require('discord.js')
-const i18n = require('i18n')
+const { Client, Collection } = require("discord.js");
+const i18n = require("i18n");
 
-const config = require('./config.js')
+const config = require("./config.js");
 const {
   loadEvents,
   loadCommands,
   loadButtons,
+  loadSelectMenus,
   i18nConfigure,
-  mongooseConnect
-} = require('./functions/load')
+  mongooseConnect,
+} = require("./functions/load");
 
-mongooseConnect()
-i18nConfigure(i18n, config)
+mongooseConnect();
+i18nConfigure(i18n, config);
 
-const client = new Client(config.clientData.clientOptions)
-client.login(config.clientData.token)
-client.commands = new Collection()
-client.buttons = new Collection()
-client.cooldowns = new Collection()
-client.giveaways = new Collection()
+const client = new Client(config.clientData.clientOptions);
+client.login(config.clientData.token);
+client.commands = new Collection();
+client.buttons = new Collection();
+client.selectMenus = new Collection();
+client.cooldowns = new Collection();
+client.giveaways = new Collection();
 
-loadEvents(client)
-loadCommands(client)
-loadButtons(client)
+loadEvents(client);
+loadCommands(client);
+loadButtons(client);
+loadSelectMenus(client);
