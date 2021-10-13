@@ -3,12 +3,7 @@ const config = require("../../config.js");
 
 function mongooseConnect() {
   mongoose
-    .connect(config.mongoPath, {
-      useNewUrlParser: true,
-      useCreateIndex: true,
-      useFindAndModify: false,
-      useUnifiedTopology: true,
-    })
+    .connect(config.mongoPath)
     .then(() => {
       console.log("Connected to mongoDB");
     })
