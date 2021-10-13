@@ -13,11 +13,6 @@ module.exports = {
 
     switch (true) {
       case interaction.isCommand():
-        try {
-          await interaction.deferReply({ ephemeral: true });
-        } catch (error) {
-          console.error(error);
-        }
         const command = interaction.client.commands.get(
           interaction.commandName
         );
@@ -29,6 +24,12 @@ module.exports = {
 
         if (command.guild && !interaction.guild)
           return interaction.editReply("This command only works in guilds");
+
+        try {
+          if (command.defer) await interaction.deferReply({ ephemeral: true });
+        } catch (error) {
+          console.error(error);
+        }
 
         if (interaction.guild) {
           Data.guild = await guildModel.findOne({

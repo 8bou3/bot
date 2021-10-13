@@ -7,7 +7,7 @@ module.exports = {
   execute(interaction, Data) {
     interaction.reply("wait...").then(async (sent) => {
       //Test event sender
-      await interaction.fetchReply();
+      if (!sent) sent = await interaction.fetchReply();
       let websocketShardsHeartbeat = [];
       interaction.client.ws.shards.each((shard) =>
         websocketShardsHeartbeat.push(
@@ -26,7 +26,8 @@ module.exports = {
               description: i18n.__mf("ping.embed.description", {
                 roundtripLatency:
                   sent.createdTimestamp - interaction.createdTimestamp,
-                listenerLatency: interaction.receivedTime - interaction.createdTimestamp,
+                listenerLatency:
+                  interaction.receivedTime - interaction.createdTimestamp,
                 websocketShardsHeartbeat: websocketShardsHeartbeat.join("\n"),
               }),
             },
