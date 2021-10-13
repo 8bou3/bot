@@ -9,11 +9,13 @@ module.exports = {
   runPermissions: ["EMBED_LINKS", "SEND_MESSAGES"],
   description: i18n.__("owner.loadcommands.description"),
   async execute(interaction) {
+    if (!interaction.client.application?.owner)
+      await interaction.client.application?.fetch();
+    if ("617807550993268737" !== interaction.user.id) return;
+
     let data = [];
     let hiddenData = [];
     let i = 0;
-    if (!interaction.client.application?.owner) await interaction.client.application?.fetch();
-    if ("617807550993268737" !== interaction.user.id) return;
 
     const commandFolders = fs.readdirSync("./commands");
     for (const folder of commandFolders) {
