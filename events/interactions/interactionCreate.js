@@ -8,8 +8,8 @@ const { checkPermissions } = require("../../functions/load");
 module.exports = {
   name: "interactionCreate",
   async execute(interaction) {
-    interaction.receivedTime = Date.now();
     let Data = new Object();
+    Data.receivedTime = Date.now();
 
     switch (true) {
       case interaction.isCommand():
@@ -130,8 +130,8 @@ module.exports = {
         if (timestamps.has(interaction.user.id)) {
           const expirationTime =
             timestamps.get(interaction.user.id) + cooldownAmount; //The time that the cooldown ends in
-          if (interaction.receivedTime < expirationTime) {
-            const timeLeft = (expirationTime - interaction.receivedTime) / 1000; //Time left
+          if (Data.receivedTime < expirationTime) {
+            const timeLeft = (expirationTime - Data.receivedTime) / 1000; //Time left
             return interaction.editReply({
               embeds: [
                 {
@@ -148,7 +148,7 @@ module.exports = {
           } else timestamps.delete(interaction.user.id); //To fix any bug in cooldowns
         } //Return if the user in cooldown
 
-        timestamps.set(interaction.user.id, interaction.receivedTime); //Add user to the cooldown list
+        timestamps.set(interaction.user.id, Data.receivedTime); //Add user to the cooldown list
         setTimeout(
           () => timestamps.delete(interaction.user.id),
           cooldownAmount

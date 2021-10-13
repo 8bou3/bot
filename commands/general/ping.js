@@ -27,7 +27,7 @@ module.exports = {
                 roundtripLatency:
                   sent.createdTimestamp - interaction.createdTimestamp,
                 listenerLatency:
-                  interaction.receivedTime - interaction.createdTimestamp,
+                  Data.receivedTime - interaction.createdTimestamp,
                 websocketShardsHeartbeat: websocketShardsHeartbeat.join("\n"),
               }),
             },
