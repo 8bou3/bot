@@ -57,7 +57,11 @@ module.exports = {
       ?.commands.set(hiddenData);
     console.log(hiddenCommands2);
 
-    interaction.editReply(`${i} Slash commands loaded`);
-    console.log(`${i} Slash commands loaded`);
+    interaction.editReply(
+      `${i} Slash commands loaded and will be updated within an hour`
+    );
+    console.log(
+      `${i} Slash commands loaded and will be updated within an hour`
+    );
   },
 };
