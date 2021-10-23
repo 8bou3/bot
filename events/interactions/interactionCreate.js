@@ -2,8 +2,6 @@ const i18n = require("i18n");
 const { Collection } = require("discord.js");
 
 const guildModel = require("../../models/guild");
-const channelModel = require("../../models/channel");
-const { checkPermissions } = require("../../functions/load");
 
 module.exports = {
   name: "interactionCreate",
@@ -11,128 +9,99 @@ module.exports = {
     let Data = new Object();
     Data.receivedTime = Date.now();
 
+    if (interaction.inGuild()) {
+      Data.guild = interaction.client.cache.guilds.get(interaction.guildId);
+
+      if (!Data.guild)
+        Data.guild = await guildModel.findOne({
+          _id: interaction.guildId,
+        });
+
+      if (!Data.guild) {
+        Data.guild = new guildModel({ _id: interaction.guildId });
+        await Data.guild.save();
+      }
+    }
+
+    Data.color = Data.guild?.color ? Data.guild.color : "#000000";
+    Data.language = Data.guild?.language ? Data.guild.language : "en";
+
+    i18n.setLocale("en");
+
     switch (true) {
       case interaction.isCommand():
-        const command = interaction.client.commands.get(
+        const command = interaction.client.cache.commands.get(
           interaction.commandName
         );
         if (!command || command.disabled)
-          return interaction.editReply({
-            content: i18n.__("error.notAnExistingCommand"),
+          return interaction.reply({
+            content: i18n.__("command.notCommand"),
             ephemeral: true,
           });
 
-        if (command.guild && !interaction.guild)
-          return interaction.editReply("This command only works in guilds");
-
-        try {
-          if (command.defer) await interaction.deferReply({ ephemeral: true });
-        } catch (error) {
-          console.error(error);
-        }
-
-        if (interaction.guild) {
-          Data.guild = await guildModel.findOne({
-            guildId: interaction.guildId,
-          }); //Get guild data
-          Data.channel = await channelModel.findOne({
-            channelId: interaction.channelId,
-          }); //Get channel data
-
-          if (!interaction.inGuild())
-            return interaction.editReply({
-              content: i18n.__("error.onlyGuildCommand"),
+        if (interaction.inGuild()) {
+          if (
+            command.permissions &&
+            !interaction.channel
+              .permissionsFor(interaction.member)
+              .has(command.permissions)
+          )
+            return interaction.reply({
+              content: i18n.__mf("command.missingPermission", {
+                user: interaction.member.id,
+                command: command.name,
+                permissions: command.permissions.join("` `"),
+              }),
               ephemeral: true,
             });
-          else {
-            if (!Data.guild) {
-              Data.guild = new guildModel({ guildId: interaction.guildId }); //Create new guild data if none
-              await Data.guild.save(); //Save the created guild data
-            }
-            if (!Data.channel) {
-              Data.channel = new channelModel({
-                channelId: interaction.channelId,
-                guildId: interaction.guildId,
-              }); //Create new channel data if none
-              await Data.channel.save(); //Save the created channel data
-            }
-          }
-        }
-
-        Data.color = Data.channel?.color
-          ? Data.channel.color
-          : Data?.guild.color
-          ? Data?.guild.color
-          : "#000000";
-        Data.language = Data.channel?.language
-          ? Data.channel.language
-          : Data.guild?.language
-          ? Data.guild.language
-          : "en";
-
-        i18n.setLocale(Data.language); //Set the language
-
-        if (
-          (command.administrators &&
-            Data.guild.roles.administrators[0] &&
-            !interaction.member.roles.cache.some((role) =>
-              Data.guild.roles.administrators.includes(role.id)
-            )) || //check the administrators roles
-          (command.moderators &&
+          else if (
+            command.moderators &&
             Data.guild.roles.moderators[0] &&
             !interaction.member.roles.cache.some((role) =>
               Data.guild.roles.moderators.includes(role.id)
-            )) //And check the moderators roles
-        )
-          return interaction.editReply({
-            embeds: [
-              {
-                color: `${Data.color}`,
-                description: i18n.__mf("command.embeds.noRole.description", {
-                  command: command.name,
-                  permissions: command.permissions.join("` `"),
-                }),
-                title: i18n.__("command.embeds.noRole.title"),
-              },
-            ],
+            )
+          )
+            return interaction.reply({
+              content: i18n.__mf("command.missingRole", {
+                command: command.name,
+                permissions: command.permissions.join("` `"),
+              }),
+              ephemeral: true,
+            });
+
+          if (
+            command.runPermissions &&
+            !interaction.channel
+              .permissionsFor(interaction.client.user)
+              .has(command.runPermissions)
+          )
+            return interaction.reply({
+              content: i18n.__mf("command.missingPermission", {
+                user: interaction.client.user,
+                command: command.name,
+                permissions: command.runPermissions.join("` `"),
+              }),
+              ephemeral: true,
+            });
+        } else if (command.guild)
+          return interaction.reply({
+            content: i18n.__("command.noGuild"),
             ephemeral: true,
           });
-        //Return if the author is missing the required roles for the command in this guild
-        else if (
-          command.permissions &&
-          checkPermissions(
-            interaction,
-            interaction.channel,
-            interaction.member,
-            command.permissions,
-            Data.color
-          )
-        )
-          return; //Return if the author is missing the required permissions for the command in this channel/guild
 
-        if (
-          command.runPermissions &&
-          checkPermissions(
-            interaction,
-            interaction.channel,
-            interaction.client.user,
-            command.permissions,
-            Data.color
-          )
-        )
-          return; //Return if the bot is missing the required permissions for the command in this channel/guild
-        //No permissions no command!!
-
-        if (!interaction.client.cooldowns.has(command.name))
-          interaction.client.cooldowns.set(command.name, new Collection()); //Create cooldowns collection for the command if none
-        const timestamps = interaction.client.cooldowns.get(command.name); //Get the cooldowns collection for this command
-        const cooldownAmount = (command.cooldown || 3) * 1000; //Default cooldown 3 sec
+        if (!interaction.client.cache.cooldowns.has(command.name))
+          interaction.client.cache.cooldowns.set(
+            command.name,
+            new Collection()
+          );
+        const timestamps = interaction.client.cache.cooldowns.get(command.name);
+        const cooldownAmount = (command.cooldown || 3) * 1000;
         if (timestamps.has(interaction.user.id)) {
           const expirationTime =
-            timestamps.get(interaction.user.id) + cooldownAmount; //The time that the cooldown ends in
+            timestamps.get(interaction.user.id) + cooldownAmount;
           if (Data.receivedTime < expirationTime) {
-            const timeLeft = (expirationTime - Data.receivedTime) / 1000; //Time left
-            return interaction.editReply({
+            const timeLeft = (expirationTime - Data.receivedTime) / 1000;
+            return interaction.reply({
               embeds: [
                 {
                   color: `${Data.color}`,
@@ -145,16 +114,16 @@ module.exports = {
               ],
               ephemeral: true,
             });
-          } else timestamps.delete(interaction.user.id); //To fix any bug in cooldowns
-        } //Return if the user in cooldown
+          } else timestamps.delete(interaction.user.id);
+        }
 
-        timestamps.set(interaction.user.id, Data.receivedTime); //Add user to the cooldown list
+        timestamps.set(interaction.user.id, Data.receivedTime);
         setTimeout(
           () => timestamps.delete(interaction.user.id),
           cooldownAmount
-        ); //Auto remove user from cooldown list
+        );
         try {
-          command.execute(interaction, Data); //Execute the command
+          command.execute(interaction, Data);
           console.log(
             `${interaction.user.tag} used the '${command.name}' slash command`
           ); //<In dev version only>
@@ -163,12 +132,7 @@ module.exports = {
             `An error occurred whilst executing the '${command.name}' command`
           );
           console.error(error);
-          let errorsChannel = Data.guild.logs?.errors?.channel
-            ? interaction.guild.channels.cache.get(
-                Data.guild.logs.errors.channel
-              )
-            : interaction.channel;
-          errorsChannel?.send(
+          interaction.channel.send(
             i18n.__mf("error.executingCommand", {
               commandName: command.name,
               errorMessage: error,
@@ -184,56 +148,17 @@ module.exports = {
           console.error(error);
         }
 
-        const button = interaction.client.buttons.get(interaction.customId);
+        const button = interaction.client.cache.buttons.get(
+          interaction.customId
+        );
         if (!button || button.disabled)
           return interaction.editReply({
-            content: i18n.__("error.notAnExistingButton"),
+            content: i18n.__("error.notButton"),
             ephemeral: true,
           });
 
-        if (interaction.guild) {
-          Data.guild = await guildModel.findOne({
-            guildId: interaction.guildId,
-          }); //Get guild data
-          Data.channel = await channelModel.findOne({
-            channelId: interaction.channelId,
-          }); //Get channel data
-
-          if (!interaction.inGuild())
-            return interaction.editReply({
-              content: i18n.__("error.onlyGuildButton"),
-              ephemeral: true,
-            });
-          else {
-            if (!Data.guild) {
-              Data.guild = new guildModel({ guildId: interaction.guildId }); //Create new guild data if none
-              await Data.guild.save(); //Save the created guild data
-            }
-            if (!Data.channel) {
-              Data.channel = new channelModel({
-                channelId: interaction.channelId,
-                guildId: interaction.guildId,
-              }); //Create new channel data if none
-              await Data.channel.save(); //Save the created channel data
-            }
-          }
-        }
-
-        Data.color = Data.channel?.color
-          ? Data.channel.color
-          : Data?.guild.color
-          ? Data?.guild.color
-          : "#000000";
-        Data.language = Data.channel?.language
-          ? Data.channel.language
-          : Data.guild?.language
-          ? Data.guild.language
-          : "en";
-
-        i18n.setLocale(Data.language); //Set the language
-
         try {
-          button.press(interaction, Data); //Press the button
+          button.press(interaction, Data);
           console.log(
             `${interaction.user.tag} pressed the '${interaction.customId}' button`
           ); //<In dev version only>
@@ -242,12 +167,7 @@ module.exports = {
             `An error occurred whilst pressing the '${interaction.customId}' button`
           );
           console.error(error);
-          let errorsChannel = Data.guild.logs?.errors?.channel
-            ? interaction.guild.channels.cache.get(
-                Data.guild.logs.errors.channel
-              )
-            : interaction.channel;
-          errorsChannel?.send(
+          interaction.channel.send(
             i18n.__mf("error.pressingButton", {
               buttonCustomId: button.customId,
               errorMessage: error,
@@ -263,7 +183,7 @@ module.exports = {
           console.error(error);
         }
 
-        const selectMenu = interaction.client.selectMenus.get(
+        const selectMenu = interaction.client.cache.selectMenus.get(
           interaction.customId
         );
         if (!selectMenu || selectMenu.disabled)
@@ -272,63 +192,17 @@ module.exports = {
             ephemeral: true,
           });
 
-        if (interaction.guild) {
-          Data.guild = await guildModel.findOne({
-            guildId: interaction.guildId,
-          }); //Get guild data
-          Data.channel = await channelModel.findOne({
-            channelId: interaction.channelId,
-          }); //Get channel data
-
-          if (!interaction.inGuild())
-            return interaction.editReply({
-              content: i18n.__("error.onlyGuildSelectMenu"),
-              ephemeral: true,
-            });
-          else {
-            if (!Data.guild) {
-              Data.guild = new guildModel({ guildId: interaction.guildId }); //Create new guild data if none
-              await Data.guild.save(); //Save the created guild data
-            }
-            if (!Data.channel) {
-              Data.channel = new channelModel({
-                channelId: interaction.channelId,
-                guildId: interaction.guildId,
-              }); //Create new channel data if none
-              await Data.channel.save(); //Save the created channel data
-            }
-          }
-        }
-
-        Data.color = Data.channel?.color
-          ? Data.channel.color
-          : Data?.guild.color
-          ? Data?.guild.color
-          : "#000000";
-        Data.language = Data.channel?.language
-          ? Data.channel.language
-          : Data.guild?.language
-          ? Data.guild.language
-          : "en";
-
-        i18n.setLocale(Data.language); //Set the language
-
         try {
-          selectMenu.select(interaction, Data); //Press the selectMenu
+          await selectMenu.select(interaction, Data);
           console.log(
-            `${interaction.user.tag} selected the '${interaction.customId}' selectMenu`
+            `${interaction.user.tag} used the '${interaction.customId}' selectMenu`
           ); //<In dev version only>
         } catch (error) {
           console.warn(
             `An error occurred whilst selecting the '${interaction.customId}' selectMenu`
           );
           console.error(error);
-          let errorsChannel = Data.guild.logs?.errors?.channel
-            ? interaction.guild.channels.cache.get(
-                Data.guild.logs.errors.channel
-              )
-            : interaction.channel;
-          errorsChannel?.send(
+          interaction.channel.send(
             i18n.__mf("error.selectingMenu", {
               selectMenuCustomId: selectMenu.customId,
               errorMessage: error,
