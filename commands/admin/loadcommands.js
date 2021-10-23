@@ -13,6 +13,8 @@ module.exports = {
       await interaction.client.application?.fetch();
     if ("617807550993268737" !== interaction.user.id) return;
 
+    await interaction.deferReply();
+
     let data = [];
     let hiddenData = [];
     let i = 0;
