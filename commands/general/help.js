@@ -14,10 +14,6 @@ module.exports = {
       description: "Choice a command",
       choices: [
         {
-          name: "logs",
-          value: "logs",
-        },
-        {
           name: "help",
           value: "help",
         },
@@ -28,7 +24,8 @@ module.exports = {
       ],
     },
   ],
-  execute(interaction, Data) {
+  async execute(interaction, Data) {
+    await interaction.deferReply();
     const commandName = interaction.options.getString("command");
     if (!commandName) {
       let fields = []; //Create array for fields
@@ -102,8 +99,8 @@ module.exports = {
         });
     } else {
       const command =
-        interaction.client.commands.get(commandName) ||
-        interaction.client.commands.find(
+        interaction.client.cache.commands.get(commandName) ||
+        interaction.client.cache.commands.find(
           (command) => command.aliases && command.aliases.includes(commandName)
         ); //Get the command data by name or aliases
       if (!command)
