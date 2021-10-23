@@ -1,11 +1,10 @@
 const i18n = require("i18n");
+const ticketModel = require("../../models/ticket");
 
 module.exports = {
   name: "add",
   usage: "<user>",
   guild: true,
-  defer: true,
-  support: true,
   runPermissions: ["EMBED_LINKS", "SEND_MESSAGES", "MANAGE_CHANNELS"],
   description: i18n.__("add.description"),
   options: [
@@ -17,9 +16,10 @@ module.exports = {
     },
   ],
   async execute(interaction, Data) {
+    await interaction.deferReply();
     if (!Data.guild.tickets?.mode)
       return interaction.editReply(
-        "**Error:**\n> Corruption in database `commands(add)`\n\n||Report this to the support: https://discord.gg/YywkMTmHHb||"
+        "**Error:**\n> Corruption in the database or no ticket sys in this guild `commands(add)`\n\n||Report this to the support: https://discord.gg/YywkMTmHHb||"
       );
     else if (
       Data.guild.tickets?.mode === "threads" &&
@@ -29,14 +29,16 @@ module.exports = {
         "**Error:**\n> Tickets with threads only work in servers with tier2 & above `commands(add)`\n\n||Report this to the support: https://discord.gg/YywkMTmHHb||"
       );
 
-    if (Data.channel.ticket.number < 1)
+    Data.ticket = await ticketModel.findById(interaction.channel.id);
+
+    if (!Data.ticket)
       return interaction.editReply(
         "**Error:**\n> This command only works in tickets"
       );
 
     if (
       !interaction.member.roles.cache?.has(Data.guild.roles.supportTeam) &&
-      interaction.channel
+      !interaction.channel
         .permissionsFor(interaction.member)
         ?.has(["ADMINISTRATOR"])
     )
@@ -49,8 +51,8 @@ module.exports = {
     switch (Data.guild.tickets?.mode) {
       case "threads":
         await interaction.members.add(user);
-        Data.channel.ticket.members.push(user.id);
-        Data.channel.save();
+        Data.ticket.members.push(user.id);
+        Data.ticket.save();
         break;
 
       case "classic":
@@ -59,8 +61,8 @@ module.exports = {
           { VIEW_CHANNEL: true, SEND_MESSAGES: true },
           { type: 1, reason: "add user to ticket" }
         );
-        Data.channel.ticket.members.push(user.id);
-        Data.channel.save();
+        Data.ticket.members.push(user.id);
+        Data.ticket.save();
         break;
     }
 
