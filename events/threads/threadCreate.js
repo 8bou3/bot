@@ -1,26 +1,25 @@
 const i18n = require("i18n");
 
-const channelModel = require("../../models/channel");
-
 module.exports = {
   name: "threadCreate",
   async execute(thread, client) {
-    let Data = new Object
-    Data.channel = await channelModel.findOne({
-      channelId: thread.parentId,
-    });
-    if (!Data.channel) {
-      Data.channel = new channelModel({
-        channelId: thread.parentId,
-        guildId: thread.guild.id,
-      }); //Create new channel data if none
-      await Data.channel.save(); //Save the created channel data
-    }
+    let Data = new Object();
 
-    if (Data.channel.threads.syncSlowmode && thread.parent.rateLimitPerUser)
+    Data.guild = client.cache.guilds.has(interaction.guildId)
+      ? client.cache.guilds.get(interaction.guildId)
+      : (Data.guild = await guildModel.findOne({
+          _id: interaction.guildId,
+        }));
+
+    if (!Data.guild) return;
+
+    if (
+      Data.guild.channels.syncSlowmode.includes(thread.parentId) &&
+      thread.parent.rateLimitPerUser
+    )
       thread.setRateLimitPerUser(
         thread.parent.rateLimitPerUser,
         i18n.__("threads.syncRateLimitPerUserReason")
-      ); //Set slowmode
+      );
   },
 };
