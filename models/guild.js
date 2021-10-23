@@ -1,90 +1,44 @@
-const mongoose = require("mongoose");
+const { Schema, model } = require("mongoose");
 
-const guildSchema = new mongoose.Schema({
-  color: { type: String, default: "#000000" },
-  language: { type: String, default: "en" },
-  logs: {
-    guild: {
-      channel: { type: String },
-      webhook: { id: { type: String }, token: { type: String } },
-      thread: { type: String },
-    },
-    channels: {
-      channel: { type: String },
-      webhook: { id: { type: String }, token: { type: String } },
-      thread: { type: String },
-    },
-    threads: {
-      channel: { type: String },
-      webhook: { id: { type: String }, token: { type: String } },
-      thread: { type: String },
-    },
-    roles: {
-      channel: { type: String },
-      webhook: { id: { type: String }, token: { type: String } },
-      thread: { type: String },
-    },
-    members: {
-      channel: { type: String },
-      webhook: { id: { type: String }, token: { type: String } },
-      thread: { type: String },
-    },
-    moderation: {
-      channel: { type: String },
-      webhook: { id: { type: String }, token: { type: String } },
-      thread: { type: String },
-    },
-  },
-  tickets: {
-    mode: { type: String },
-    counter: { type: Number, default: 0 },
+module.exports = model(
+  "guilds",
+  new Schema({
+    _id: { type: String, required: true },
+
+    color: { type: String, default: "#000000" },
+    language: { type: String, default: "en" },
+
     messages: {
-      channel: { type: String },
-      openTicket: { type: String },
+      channel: String,
+      openTicket: String,
     },
-    parent: { type: String },
-    channel: { type: String },
-    cooldown: { type: Number },
-    options: [
-      {
-        label: { type: String },
-        value: { type: String },
-        description: { type: String },
-      },
-    ],
-  },
-  channels: {
-    starboard: [
-      {
-        emoji: { type: String },
-        reactions: { type: Number },
-        channel: { type: String },
-      },
-    ],
-    blacklist: { type: [String] },
-  },
-  roles: {
-    sticky: { type: [String] },
-    supportTeam: { type: String },
-    administrators: { type: [String] },
-    moderators: { type: [String] },
-  },
-  automations: [
-    {
-      triggerType: { type: String }, //command | startsWith | contains | regex | exactMatch | message create-edit-remove | reaction add-remove | interval | channel create-update-remove | role create-update-remove | emoji create-update-remove
-      trigger: { type: String },
-      response: { type: String },
-      roles: {
-        Ignore: { type: Boolean }, //Require roles | Ignore roles
-        ids: { type: [String] },
-      },
-      channels: {
-        Ignore: { type: Boolean }, //Require channels | Ignore channels
-        ids: { type: [String] },
-      },
-    },
-  ],
-  guildId: { type: String, required: true },
-});
 
-const MessageModel = (module.exports = mongoose.model("guilds", guildSchema));
+    tickets: {
+      mode: String,
+      counter: { type: Number },
+      parent: String,
+      channel: String,
+      cooldown: Number,
+      options: [
+        {
+          label: String,
+          value: String,
+          description: String,
+        },
+      ],
+    },
+
+    channels: {
+      suggestions: String,
+      autoCrosspost: [String],
+      syncSlowmode: [String],
+      blacklist: [String],
+    },
+
+    roles: {
+      sticky: [String],
+      supportTeam: String,
+      moderators: [String],
+    },
+  })
+);
