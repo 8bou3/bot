@@ -3,9 +3,8 @@ const i18n = require("i18n");
 module.exports = {
   name: "tickets",
   usage: "<channel> <support(role)> <mode{classic | threads}> [cooldown: 300]",
-  administrators: true,
+  cooldown: 300,
   guild: true,
-  defer: true,
   permissions: ["ADMINISTRATOR"],
   runPermissions: ["EMBED_LINKS", "SEND_MESSAGES", "MANAGE_CHANNELS"],
   description: i18n.__("tickets.description"),
@@ -25,7 +24,8 @@ module.exports = {
     {
       type: 3,
       name: "mode",
-      description: "Classic: ticket = channel, Threads: ticket = thread",
+      description:
+        "Classic: ticket = channel in category, Threads: ticket = thread in channel",
       required: true,
       choices: [
         {
@@ -45,11 +45,24 @@ module.exports = {
     },
   ],
   async execute(interaction, Data) {
+    await interaction.deferReply();
     let openTicketsChannel = interaction.options.getChannel("open_tickets");
     let supportRole = interaction.options.getRole("support");
     let mode = interaction.options.getString("mode");
     let cooldown = interaction.options.getInteger("cooldown");
     let followUpData = "";
+    let options = Data.guild.tickets.options[0]
+      ? Data.guild.tickets.options
+      : [
+          {
+            label: "Help",
+            description: "Get help from the support team",
+          },
+          {
+            label: "Report",
+            description: "Report user, mod or content",
+          },
+        ];
 
     if (
       mode === "threads" &&
@@ -64,18 +77,23 @@ module.exports = {
         "open_tickets channel must be a text based channel"
       );
 
+    let i = 0;
+    options.forEach((option) => {
+      option.value = `${i}`;
+      i += 1;
+    });
+
     try {
       openTicketsChannel.send({
-        content: "Press the button to create a ticket",
+        content: "Select your ticket type to open a ticket",
         components: [
           {
             components: [
               {
-                label: "Create Ticket",
                 customId: "create_ticket",
-                style: "SECONDARY",
-                emoji: "🎫",
-                type: "BUTTON",
+                placeholder: "Choose your ticket type...",
+                options: options,
+                type: "SELECT_MENU",
               },
             ],
             type: "ACTION_ROW",
@@ -87,18 +105,9 @@ module.exports = {
       return interaction.editReply(`**Error:**\n> ${error}`);
     }
 
-    switch (mode) {
-      case "threads":
-        break;
-
-      default:
-        break;
-    }
-
     let oldParent = await interaction.guild.channels.cache.get(
       Data.guild.tickets?.parent
     );
-    let parent;
 
     if (
       (mode === "classic" && oldParent?.type === "GUILD_CATEGORY") ||
@@ -137,11 +146,11 @@ module.exports = {
           permissionOverwrites: [
             {
               id: interaction.guild.id,
-              deny: ["READ_MESSAGE_HISTORY", "SEND_MESSAGES"],
+              deny: ["READ_MESSAGE_HISTORY", "SEND_MESSAGES", "VIEW_CHANNEL"],
             },
             {
               id: supportRole.id,
-              allow: ["READ_MESSAGE_HISTORY"],
+              allow: ["READ_MESSAGE_HISTORY", "VIEW_CHANNEL"],
               type: "role",
             },
             {
@@ -157,8 +166,6 @@ module.exports = {
           ],
         });
     }
-
-    let messagesChannel;
 
     let channel = await interaction.guild.channels.create(`open-tickets`, {
       type: "GUILD_TEXT",
@@ -218,8 +225,8 @@ module.exports = {
     Data.guild.tickets.parent = parent.id;
     Data.guild.tickets.channel = mode === "threads" ? parent.id : channel.id;
     Data.guild.tickets.cooldown = cooldown ? cooldown : 300;
-    Data.guild.tickets.messages.channel = messagesChannel.id;
-    Data.guild.tickets.messages.openTicket = openTicketMessage.id;
+    Data.guild.messages.channel = messagesChannel.id;
+    Data.guild.messages.openTicket = openTicketMessage.id;
     Data.guild.roles.supportTeam = supportRole.id;
     Data.guild.save();
     await interaction.editReply("Created new ticket sys");
