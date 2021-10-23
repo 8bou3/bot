@@ -1,10 +1,9 @@
 const { Collection } = require("discord.js");
 const i18n = require("i18n");
-const channelModel = require("../../models/channel");
+const ticketModel = require("../../models/ticket");
 
 module.exports = {
   customId: "create_ticket",
-  defer: true,
   async select(interaction, Data) {
     if (!Data.guild.tickets?.mode)
       return interaction.editReply(
@@ -18,28 +17,27 @@ module.exports = {
         "**Error:**\n> Tickets with threads only work in servers with tier2 & above `selectMenus(create_ticket)`\n\n||Report this to the support: https://discord.gg/YywkMTmHHb||"
       );
 
-    const channels = await interaction.guild.channels.fetch();
-    const messagesChannel = channels.get(Data.guild.tickets.messages.channel);
+    const messagesChannel = interaction.guild.channels.cache.get(
+      Data.guild.tickets.messages?.channel
+    );
     const openTicketMessage = await messagesChannel?.messages.fetch(
       Data.guild.tickets.messages.openTicket
     );
-    const channel = channels.get(Data.guild.tickets.channel);
+    const channel = interaction.guild.channels.cache.get(Data.guild.tickets.channel);
     if (!channel)
       return interaction.editReply(
         "**Error:**\n> No tickets channel `selectMenus(create_ticket)`\n\n||Report this to the support: https://discord.gg/YywkMTmHHb||"
       );
-    const parent = channels.get(
-      Data.guild.tickets.parent
-    );
+    const parent = interaction.guild.channels.cache.get(Data.guild.tickets.parent);
     if (!parent)
       return interaction.editReply(
         "**Error:**\n> No parent channel `selectMenus(create_ticket)`\n\n||Report this to the support: https://discord.gg/YywkMTmHHb||"
       );
 
     const cooldownAmount = Data.guild.tickets.cooldown * 1000;
-    if (!interaction.client.cooldowns.has("create_ticket"))
-      interaction.client.cooldowns.set("create_ticket", new Collection());
-    const timestamps = interaction.client.cooldowns.get("create_ticket");
+    if (!interaction.client.cache.cooldowns.has("create_ticket"))
+      interaction.client.cache.cooldowns.set("create_ticket", new Collection());
+    const timestamps = interaction.client.cache.cooldowns.get("create_ticket");
     if (timestamps.has(interaction.user.id)) {
       const expirationTime =
         timestamps.get(interaction.user.id) + cooldownAmount;
@@ -109,14 +107,13 @@ module.exports = {
         break;
     }
 
-    Data.ticket = new channelModel({
-      ticket: {
-        status: "open",
-        number: Data.guild.tickets.counter,
-        members: [interaction.user.id],
-      },
-      channelId: ticket.id,
+    Data.ticket = new ticketModel({
+      _id: ticket.id,
       guildId: interaction.guildId,
+
+      number: Data.guild.tickets.counter,
+      status: "open",
+      members: [interaction.user.id],
     });
     Data.guild.tickets.counter += 1;
     Data.ticket.save();
