@@ -13,9 +13,7 @@ module.exports = {
       Data.guild = interaction.client.cache.guilds.get(interaction.guildId);
 
       if (!Data.guild)
-        Data.guild = await guildModel.findOne({
-          _id: interaction.guildId,
-        });
+        Data.guild = await guildModel.findById(interaction.guildId);
 
       if (!Data.guild) {
         Data.guild = new guildModel({ _id: interaction.guildId });
@@ -40,6 +38,14 @@ module.exports = {
           });
 
         if (interaction.inGuild()) {
+          if (
+            Data.guild.channels.blacklist.includes(interaction.channelId) &&
+            !command.management
+          )
+            return interaction.reply({
+              content: "Not allowed to use commands here",
+              ephemeral: true,
+            });
           if (
             command.permissions &&
             !interaction.channel

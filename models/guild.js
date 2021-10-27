@@ -29,7 +29,10 @@ module.exports = model(
     },
 
     channels: {
-      suggestions: String,
+      autoThreads: {
+        ids: [String],
+        options: [{ names: String, autoArchiveDuration: Number }],
+      },
       autoCrosspost: [String],
       syncSlowmode: [String],
       blacklist: [String],
