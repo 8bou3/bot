@@ -34,7 +34,7 @@
 			"notNewsChannels": "This shit only works in news channels"
 		}
 	},
-	"autothreads": {
+	"autoThreads": {
 		"description": "Turn auto create threads on new messages in news channel on or off",
 		"on": {
 			"description": "Turn on",
@@ -81,29 +81,5 @@
 	},
 	"threads": {
 		"autoRateLimitPerUserReason": "Automation by imagine a bot:\nAuto sync threads slowmode"
-	},
-	"help": {
-		"description": "help.description"
-	},
-	"autoThreads": {
-		"description": "autoThreads.description",
-		"on": {
-			"description": "autoThreads.on.description",
-			"namesDescription": "autoThreads.on.namesDescription",
-			"durationDescription": "autoThreads.on.durationDescription",
-			"autoArchiveDurationFlags": {
-				"instantly": "autoThreads.on.autoArchiveDurationFlags.instantly"
-			},
-			"auto_deleteDescription": "autoThreads.on.auto_deleteDescription"
-		},
-		"off": {
-			"description": "autoThreads.off.description"
-		}
-	},
-	"add": {
-		"description": "add.description"
-	},
-	"tickets": {
-		"description": "tickets.description"
 	}
 }
