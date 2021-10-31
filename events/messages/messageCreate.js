@@ -3,7 +3,7 @@ const guildModel = require("../../models/guild");
 module.exports = {
   name: "messageCreate",
   async execute(message) {
-    if (message.author.bot) return;
+    if (message.author.bot && !message.webhookId) return;
     let Data = new Object();
 
     if (message.guildId) {

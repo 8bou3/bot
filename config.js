@@ -1,7 +1,7 @@
 module.exports = {
   clientData: {
     clientOptions: {
-      partials: ["USER", "CHANNEL", "GUILD_MEMBER", "MESSAGE", "REACTION"],
+      partials: ["USER", "CHANNEL", "GUILD_MEMBER", "MESSAGE"],
       intents: [
         "GUILDS",
         "GUILD_MEMBERS",

@@ -1,4 +1,3 @@
-const Discord = require("discord.js");
 const i18n = require("i18n");
 const fs = require("fs");
 
@@ -45,13 +44,5 @@ module.exports = {
       `${i} Slash commands loaded and will be updated within an hour`
     );
     interaction.editReply(i18n.__mf("loadcommands.loaded", { i: i }));
-
-    interaction.client.guilds.cache
-      .get("859171064679890974") //Spirit's Development server
-      ?.commands.set(hiddenData);
-
-    interaction.client.guilds.cache
-      .get("856688268519276544") //Imagine a bot - Support server
-      ?.commands.set(hiddenData);
   },
 };
