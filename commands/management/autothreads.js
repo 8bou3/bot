@@ -1,49 +1,68 @@
 const i18n = require("i18n");
+const ms = require("ms");
 const { deleteElements } = require("../../functions/deleteElements");
 
 module.exports = {
   name: "autothreads",
   usage: "<boolean: toggle>",
+  cooldown: 15,
   management: true,
   guild: true,
-  permissions: ["MANAGE_MESSAGES", "SEND_MESSAGES"],
-  runPermissions: ["EMBED_LINKS", "SEND_MESSAGES", "MANAGE_MESSAGES"],
+  permissions: ["MANAGE_THREADS", "MANAGE_MESSAGES", "SEND_MESSAGES"],
+  runPermissions: ["MANAGE_THREADS", "SEND_MESSAGES", "MANAGE_MESSAGES"],
   description: i18n.__("autoThreads.description"),
   options: [
     {
       type: 1,
       name: "on",
-      description: "Auto create threads",
+      description: i18n.__("autoThreads.on.description"),
       options: [
         {
           type: 3,
           name: "names",
-          description: "Threads names, (ex: Comments)",
+          description: i18n.__("autoThreads.on.namesDescription"),
           required: true,
         },
         {
           type: 4,
           name: "duration",
-          description: "Auto Archive Duration in minutes, (default: instantly)",
+          description: i18n.__("autoThreads.on.durationDescription"),
           choices: [
-            { name: "instantly", value: 1 },
-            { name: "1 Hour", value: 60 },
-            { name: "1 Day", value: 1440 },
-            { name: "3 Days", value: 4320 },
-            { name: "1 Week", value: 10080 },
+            {
+              name: i18n.__(
+                "autoThreads.on.autoArchiveDurationFlags.instantly"
+              ),
+              value: 1,
+            },
+            {
+              name: ms(60 * 60 * 1000, { long: true }).toLowerCase(),
+              value: 60,
+            },
+            {
+              name: ms(1440 * 60 * 1000, { long: true }).toLowerCase(),
+              value: 1440,
+            },
+            {
+              name: ms(4320 * 60 * 1000, { long: true }).toLowerCase(),
+              value: 4320,
+            },
+            {
+              name: ms(10080 * 60 * 1000, { long: true }).toLowerCase(),
+              value: 10080,
+            },
           ],
         },
         {
           type: 5,
           name: "auto_delete",
-          description: "True: delete the thread on delete the message",
+          description: i18n.__("autoThreads.on.auto_deleteDescription"),
         },
       ],
     },
     {
       type: 1,
       name: "off",
-      description: "Turn the shit off",
+      description: i18n.__("autoThreads.off.description"),
       options: [],
     },
   ],
@@ -51,23 +70,18 @@ module.exports = {
     await interaction.deferReply();
     let toggle = interaction.options.getSubcommand() === "on" ? true : false;
     let names = interaction.options.getString("names");
-    let autoArchiveDuration = interaction.options.getInteger("duration")
-      ? interaction.options.getInteger("duration")
-      : 1;
-    let autoDelete =
-      interaction.options.getBoolean("auto_delete") === null
-        ? true
-        : interaction.options.getBoolean("auto_delete");
+    let autoArchiveDuration = interaction.options.getInteger("duration");
+    if (!autoArchiveDuration) autoArchiveDuration = 1;
+    let autoDelete = interaction.options.getBoolean("auto_delete");
+    if (autoDelete !== false) autoDelete = true;
 
-    if (names.length > 16)
-      return interaction.editReply("Thread names must be under 16 charactars");
+    if (names?.length > 16)
+      return interaction.editReply(i18n.__("autoThreads.on.maxNames"));
     if (
       ["NONE", "TIER_1"].includes(interaction.guild.premiumTier) &&
       autoArchiveDuration > 1440
     )
-      return interaction.editReply(
-        "autoArchiveDuration above 24 hours only available for guilds with tier 2 and above"
-      );
+      return interaction.editReply(i18n.__("autoThreads.on.premiumTier"));
 
     if (
       toggle &&
@@ -102,23 +116,21 @@ module.exports = {
       );
       await Data.guild.save();
     }
-    let autoArchiveDurationFlags =
+    let autoArchiveDurationFlag =
       autoArchiveDuration === 1
-        ? "instantly"
-        : autoArchiveDuration === 60
-        ? "1 Hour"
-        : autoArchiveDuration === 1440
-        ? "1 Day"
-        : autoArchiveDuration === 4320
-        ? "3 Days"
-        : "1 Week";
+        ? i18n.__("autoThreads.on.autoArchiveDurationFlags.instantly")
+        : ms(autoArchiveDuration * 60 * 1000, { long: true });
+
+    let options = toggle
+      ? i18n.__mf("autoThreads.on.options", {
+          names: names,
+          autoArchiveDurationFlag: autoArchiveDurationFlag,
+          autoDelete: autoDelete,
+        })
+      : "";
 
     interaction.editReply(
-      `Auto threads \`${toggle}\`${
-        toggle
-          ? `\n**Names:** ${names} \n**Auto Archive Duration:** ${autoArchiveDurationFlags}`
-          : ""
-      }`
+      i18n.__mf("autoThreads.response", { toggle: toggle, options: options })
     );
   },
 };

@@ -1,6 +1,6 @@
 module.exports = {
   name: "warn",
   execute(warn) {
-    console.warn(warn);
+    console.log(warn);
   },
 };

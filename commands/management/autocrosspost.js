@@ -3,12 +3,13 @@ const { deleteElements } = require("../../functions/deleteElements");
 
 module.exports = {
   name: "autocrosspost",
+  description: i18n.__("autoCrosspost.description"),
   usage: "<boolean: toggle>",
+  cooldown: 15,
   management: true,
   guild: true,
   permissions: ["MANAGE_MESSAGES", "SEND_MESSAGES"],
-  runPermissions: ["EMBED_LINKS", "SEND_MESSAGES", "MANAGE_MESSAGES"],
-  description: i18n.__("autoCrosspost.description"),
+  runPermissions: ["SEND_MESSAGES", "MANAGE_MESSAGES"],
   options: [
     {
       type: 5,
@@ -36,11 +37,13 @@ module.exports = {
     }
 
     interaction.editReply(
-      `Auto crosspost \`${toggle}\`${
-        interaction.channel.type !== "GUILD_NEWS"
-          ? "\n\n`-` This shit only works in news channels"
-          : ""
-      }`
+      i18n.__mf("autoCrosspost.response", {
+        toggle: toggle,
+        notes:
+          interaction.channel.type !== "GUILD_NEWS"
+            ? `\n\n\`-\` ${i18n.__("autoCrosspost.notes.notNewsChannels")}`
+            : "",
+      })
     );
   },
 };

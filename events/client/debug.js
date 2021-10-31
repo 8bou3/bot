@@ -1,6 +1,6 @@
 module.exports = {
   name: "debug",
   execute(info) {
-    console.log(`debug -> ${info}`);
+    // console.log(`debug -> ${info}`);
   },
 };

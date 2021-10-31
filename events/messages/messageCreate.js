@@ -26,20 +26,16 @@ module.exports = {
           !message.hasThread &&
           Data.options
         ) {
-          message
-            .startThread({
-              name: `${Data.options.names} {${message.content.slice(0, 14)}}`,
-              autoArchiveDuration:
-                Data.options.autoArchiveDuration > 1
-                  ? Data.options.autoArchiveDuration
-                  : undefined,
-              reason: "Auto Threads",
-            })
-            .then((thread) =>
-              Data.options.autoArchiveDuration === 1
-                ? thread.setArchived(true)
-                : undefined
-            );
+          message.startThread({
+            name: `${Data.options.names} {${message.content.slice(0, 14)}${
+              message.content.length > 15 ? "..." : ""
+            }}`,
+            autoArchiveDuration:
+              Data.options.autoArchiveDuration > 1
+                ? Data.options.autoArchiveDuration
+                : undefined,
+            reason: "Auto Threads",
+          });
         }
       }
     }

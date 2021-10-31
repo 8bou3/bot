@@ -3,7 +3,6 @@ const guildModel = require("../../models/guild");
 module.exports = {
   name: "messageDelete",
   async execute(message) {
-    if (message.author.bot) return;
     let Data = new Object();
 
     if (message.guildId) {
@@ -12,12 +11,12 @@ module.exports = {
         : await guildModel.findById(message.guildId);
 
       if (Data.guild?.channels.autoThreads.ids.includes(message.channelId)) {
-        Data.options =
+        if (
           Data.guild.channels.autoThreads.options[
             Data.guild.channels.autoThreads.ids.indexOf(message.channelId)
-          ];
-        if (message.thread.manageable && Data.options.autoDelete) {
-          message.thread.delete();
+          ].autoDelete
+        ) {
+          message.thread?.delete();
         }
       }
     }

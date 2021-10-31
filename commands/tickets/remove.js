@@ -5,6 +5,7 @@ const { deleteElements } = require("../../functions/deleteElements");
 module.exports = {
   name: "remove",
   usage: "<user>",
+  disabled: true,
   guild: true,
   runPermissions: ["EMBED_LINKS", "SEND_MESSAGES", "MANAGE_CHANNELS"],
   description: i18n.__("add.description"),

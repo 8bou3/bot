@@ -1,5 +1,6 @@
 module.exports = {
   customId: "create_ticket",
+  disabled: true,
   async press(interaction, Data) {
     let options = Data.guild.tickets.options[0]
       ? Data.guild.tickets.options
@@ -17,7 +18,7 @@ module.exports = {
     let i = 0;
     options.forEach((option) => {
       option.value = `${i}`;
-      i += 1;
+      i++;
     });
 
     interaction

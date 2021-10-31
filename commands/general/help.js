@@ -4,6 +4,7 @@ const fs = require("fs");
 module.exports = {
   name: "help",
   usage: "[command]",
+  disabled: true,
   runPermissions: ["EMBED_LINKS", "SEND_MESSAGES"],
   description: i18n.__("help.description"),
   aliases: ["command", "commands"],

@@ -3,10 +3,18 @@ module.exports = {
 };
 
 function deleteElements(array, value) {
-  for (var i = 0; i < array.length; i++) {
+  for (let i in array) {
     if (array[i] === value) {
       array.splice(i, 1);
-      i--;
     }
   }
-}
+} //36ms for 16000 element
+
+// function deleteElements(array, value) {
+//   for (var i = 0; i < array.length; i++) {
+//     if (array[i] === value) {
+//       array.splice(i, 1);
+//       i--;
+//     }
+//   }
+// } //31ms for 16000 element

@@ -9,8 +9,8 @@ module.exports = {
         }\n> Total Servers: ${
           client.guilds.cache.size
         }\n> Date: <t:${Math.round(
-          Date.now() / 100
-        )}:D>\n> Time: <t:${Math.round(Date.now() / 100)}:T>`
+          Date.now() / 1000
+        )}:D>\n> Time: <t:${Math.round(Date.now() / 1000)}:T>`
       );
   },
 };

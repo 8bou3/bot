@@ -1,1 +1,87 @@
-{}
+{
+  "command": {
+    "notCommand": "I couldn't get the commandFile or this is not an existing command or disabled",
+    "blacklistChannel": "Not allowed to use commands here",
+    "missingPermission": "> <@!{user}> needs the `{permissions}` permission(s) in <#{channel}> to use the `{command}` command",
+    "noGuild": "Only guild command!!",
+    "cooldown": "Please wait `{timeLeft}` second(s) before reusing the command `{command}`"
+  },
+  "button": {
+    "notButton": "I couldn't get the buttonFile or this is not an existing button or disabled"
+  },
+  "selectMenu": {
+    "notSelectMenu": "I couldn't get the selectMenuFile or this is not an existing selectMenu or disabled"
+  },
+
+  "error": {
+    "message": "`-` An error occurred whilst {process}\n`-` please contact with support team\n`-` https://discord.gg/YywkMTmHHb \n\n**Error:**\n> {errorMessage}",
+
+    "noTextChannel": "**Invalid channel!!**\n\n> For some reason,, I culdn't reach the channel\n\nAre you sure that I have the permissions to view the targeted channel!?\nIf yes, please contact with our support team",
+    "notTextChannel": "**Not a text channel!!**\n\n> Please choose a valid text channel"
+  },
+  "loadcommands": {
+    "description": "Load all the slash commands and upload it to Discord",
+    "loaded": "{i} Slash commands loaded and will be updated within an hour"
+  },
+  "ping": {
+    "description": "Latency info",
+    "results": "**Roundtrip latency:**\n> `{roundtripLatency}ms`\n\n**Listener latency:**\n> `{listenerLatency}ms`\n\n**Websocket Shards heartbeat:**\n> `{websocketShardsHeartbeat}`",
+    "websocketShardsHeartbeat": "`Shard({shardId}): {shardPing}ms`"
+  },
+  "autoCrosspost": {
+    "description": "Turn auto crosspost new messages in news channel on or off",
+    "booleanDescription": "True: on, False: off (default: toggle)",
+    "response": "Auto crosspost `{toggle}`{notes}",
+    "notes": {
+      "notNewsChannels": "This shit only works in news channels"
+    }
+  },
+  "autothreads": {
+    "description": "Turn auto create threads on new messages in news channel on or off",
+    "on": {
+      "description": "Turn on",
+      "namesDescription": "Threads names, (ex: Comments)",
+      "durationDescription": "Auto Archive Duration in minutes, (default: instantly)",
+      "auto_deleteDescription": "True: Delete the thread automatically when deleting the parent message, False: off",
+      "maxNames": "Thread names must be under 16 charactars",
+      "premiumTier": "autoArchiveDuration above 24 hours only available for guilds with tier 2 and above",
+      "autoArchiveDurationFlags": {
+        "instantly": "instantly"
+      },
+      "options": "\n**Names:** `{names}` \n**Auto Archive Duration:** `{autoArchiveDurationFlag}`\n**Auto Delete:** `{autoDelete}`"
+    },
+    "off": {
+      "description": "Turn the shit off"
+    },
+    "response": "Auto threads `{toggle}`{options}"
+  },
+  "blacklist": {
+    "description": "Disable commands in a channel",
+    "booleanDescription": "True: on, False: off",
+    "added": "Added <#{channel}> to blacklist\n`-` Management commands always enabled",
+    "removed": "Removed <#{channel}> from blacklist"
+  },
+  "slowmode": {
+    "description": "Manage slowmode in a channel",
+    "auto": {
+      "description": "Set slowmode automatically when creating a thread in this channel",
+      "timeoutDescription": "Slowmode duration",
+      "timeoutFlags": {
+        "sync": "sync"
+      },
+      "toggleDescription": "True: on, False: off (default: toggle)",
+      "timeoutOption": "\nTimeout: `{timeoutFlag}`",
+      "response": "Auto Slowmode: `{toggle}`{options}"
+    },
+    "set": {
+      "description": "change slowmode in a channel",
+      "timeoutDescription": "Slowmode duration",
+      "minTimeout": "timeout must be above -1",
+      "reason": "Set slowmode command used by: {user}",
+      "response": "Slowmode: `{timeout}`"
+    }
+  },
+  "threads": {
+    "autoRateLimitPerUserReason": "Automation by imagine a bot:\nAuto sync threads slowmode"
+  }
+}

@@ -4,6 +4,7 @@ module.exports = {
   name: "tickets",
   usage: "<channel> <support(role)> <mode{classic | threads}> [cooldown: 300]",
   cooldown: 300,
+  disabled: true,
   guild: true,
   permissions: ["ADMINISTRATOR"],
   runPermissions: ["EMBED_LINKS", "SEND_MESSAGES", "MANAGE_CHANNELS"],
@@ -80,7 +81,7 @@ module.exports = {
     let i = 0;
     options.forEach((option) => {
       option.value = `${i}`;
-      i += 1;
+      i++;
     });
 
     try {

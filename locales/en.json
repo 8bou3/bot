@@ -1,125 +1,109 @@
 {
-  "embeds": {
-    "noPermissions": {
-      "description": "> <@!{user}> is missing -some or all- `{permissions}` in <#{channel}> to complete this process",
-      "title": "Missing permission!!"
-    },
-    "missingRole": {
-      "description": "",
-      "title": "Missing role!!"
-    },
-    "cooldown": {
-      "description": "Please wait `{timeLeft}` second(s) before reusing the command\n`{command}`",
-      "title": "Slowdown!!"
-    }
-  },
-  "error": {
-    "notAnExistingCommand": "I couldn't get the commandFile or this is not an existing command or disabled",
-    "onlyGuildCommand": "This command is used in guilds/servers only!!",
-    "noTextChannel": "**Invalid channel!!**\n\n> For some reason,, I culdn't reach the channel\n\nAre you sure that I have the permissions to view the targeted channel!?\nIf yes, please contact with our support team",
-    "notTextChannel": "**Not a text channel!!**\n\n> Please choose a valid text channel",
-    "executingCommand": "`-` An error occurred whilst executing the {commandName} command,\n`-` please contact with support team\n`-` https://discord.gg/YywkMTmHHb \n\n**Error:**\n> {errorMessage}",
-    "editingMessage": "`-` An error occurred whilst editing message in <#{channel}>,\n`-` please contact with support team\n`-` https://discord.gg/YywkMTmHHb \n\n**Error:**\n> {errorMessage}",
-    "sendingMessage": "`-` An error occurred whilst sending message in <#{channel}>,\n`-` please contact with support team\n`-` https://discord.gg/YywkMTmHHb \n\n**Error:**\n> {errorMessage}",
-    "loggingEvent": "`-` An error occurred whilst logging the {event} event,\n`-` please contact with support team\n`-` https://discord.gg/YywkMTmHHb \n\n**Error:**\n> {errorMessage}",
-    "usingBulkDelete": "`-` An error occurred whilst using bulkDelete in <#{channel}>,\n`-` please contact with support team\n`-` https://discord.gg/YywkMTmHHb \n\n**Error:**\n> {errorMessage}"
-  },
-  "ping": {
-    "description": "Latency info",
-    "embed": {
-      "description": "**Roundtrip latency:**\n> `{roundtripLatency}ms`\n\n**Listener latency:**\n> `{listenerLatency}ms`\n\n**Websocket Shards heartbeat:**\n> `{websocketShardsHeartbeat}`"
-    },
-    "websocketShardsHeartbeat": "`Shard({shardId}): {shardPing}ms`"
-  },
-  "help": {
-    "description": "Display all commands or detailed information about a specific command",
-    "embeds": {
-      "menu": {
-        "title": "The commands you can use here are listed below..",
-        "description": "Type `=help [command]` for more information about a specific command."
-      },
-      "invalidCommand": {
-        "title": "Invalid command name!!",
-        "description": "Type `=help` to show your commands list"
-      },
-      "command": {
-        "aliases": "Command aliases:",
-        "usage": "Command usage:",
-        "usageValue": "> `={usage}`\n\n\\*<required> [optional]\\*",
-        "noPermissions": "Requierd user permissions:",
-        "permissions": "Requierd user permissions:",
-        "noPermissionsValue": "> `{permissions}`\n{note}",
-        "noPermissionsNote": "\\*You can't use this command here\\*",
-        "noRunPermissions": "Requierd bot permissions:",
-        "noRunPermissionsValue": "> `{permissions}`\n{note}",
-        "noRunPermissionsNote": "\\*I can't run this command here\\*"
-      }
-    }
-  },
-  "giveaways": {
-    "create": {
-      "description": "Create a new giveaway",
-      "embeds": {
-        "giveawayMessage": {
-          "description": "Imagine a giveaway"
-        }
-      },
-      "created": "Created a new giveaway!!"
-    }
-  },
-  "threads": {
-    "syncRateLimitPerUserReason": "Automation by imagine a bot:\nAuto sync threads slowmode"
-  },
-  "owner": {
-    "loadcommands": {
-      "description": "Re-load all the available slash commands"
-    }
-  },
-  "logs": {
-    "messageDelete": {
-      "title": "Deleted message in {channel}",
-      "executorName": "Executor:",
-      "noRelevant": "No relevant audit logs were found",
-      "attachmentURLsName": "Attachments:",
-      "attachmentURLsValue": "> {attachments}\n\n> \\*All attachments in deleted messages will be removed from Google Cloud Storage after some time\\*",
-      "embedsName": "Embeds:",
-      "embedsAwaitMessage": "Sending embeds in a message...",
-      "noExecutor": "Discord sucks, I know the message was deleted but I don't know by who"
-    },
-    "command": {
-      "description": "Setting up the logs",
-      "createWebhookReason": "Create log system",
-      "embeds": {
-        "noAction": {
-          "description": "> This is not an option\n\n**Usage:**\n> =logs <action> <channel>\n\n**Available options:**\n> `messages`, `guild`, `channels`, `threads`, `roles`, `emojis`, `members`, `moderation`, `giveaways`, `errors`, `bank`",
-          "title": "Not an option!!"
-        },
-        "setLogs": {
-          "description": "Created logs system in <#{channel}> for {action}",
-          "title": "Successful!!"
-        }
-      }
-    }
-  },
-  "clear": {
-    "description": "Bulk deletes messages from a text channel",
-    "embeds": {
-      "noArgs": {
-        "description": "Please supply a number less than 100 and more than 1",
-        "title": "Invalid number!!"
-      },
-      "noUser": {
-        "description": "",
-        "title": ""
-      },
-      "user": {
-        "description": "",
-        "title": ""
-      },
-      "channel": {
-        "description": "",
-        "title": ""
-      }
-    }
-  }
+	"command": {
+		"notCommand": "I couldn't get the commandFile or this is not an existing command or disabled",
+		"blacklistChannel": "Not allowed to use commands here",
+		"missingPermission": "> <@!{user}> needs the `{permissions}` permission(s) in <#{channel}> to use the `{command}` command",
+		"noGuild": "Only guild command!!",
+		"cooldown": "Please wait `{timeLeft}` second(s) before reusing the command `{command}`"
+	},
+	"button": {
+		"notButton": "I couldn't get the buttonFile or this is not an existing button or disabled"
+	},
+	"selectMenu": {
+		"notSelectMenu": "I couldn't get the selectMenuFile or this is not an existing selectMenu or disabled"
+	},
+	"error": {
+		"message": "`-` An error occurred whilst {process}\n`-` please contact with support team\n`-` https://discord.gg/YywkMTmHHb \n\n**Error:**\n> {errorMessage}",
+		"noTextChannel": "**Invalid channel!!**\n\n> For some reason,, I culdn't reach the channel\n\nAre you sure that I have the permissions to view the targeted channel!?\nIf yes, please contact with our support team",
+		"notTextChannel": "**Not a text channel!!**\n\n> Please choose a valid text channel"
+	},
+	"loadcommands": {
+		"description": "Load all the slash commands and upload it to Discord",
+		"loaded": "{i} Slash commands loaded and will be updated within an hour"
+	},
+	"ping": {
+		"description": "Latency info",
+		"results": "**Roundtrip latency:**\n> `{roundtripLatency}ms`\n\n**Listener latency:**\n> `{listenerLatency}ms`\n\n**Websocket Shards heartbeat:**\n> `{websocketShardsHeartbeat}`",
+		"websocketShardsHeartbeat": "`Shard({shardId}): {shardPing}ms`"
+	},
+	"autoCrosspost": {
+		"description": "Turn auto crosspost new messages in news channel on or off",
+		"booleanDescription": "True: on, False: off (default: toggle)",
+		"response": "Auto crosspost `{toggle}`{notes}",
+		"notes": {
+			"notNewsChannels": "This shit only works in news channels"
+		}
+	},
+	"autothreads": {
+		"description": "Turn auto create threads on new messages in news channel on or off",
+		"on": {
+			"description": "Turn on",
+			"namesDescription": "Threads names, (ex: Comments)",
+			"durationDescription": "Auto Archive Duration in minutes, (default: instantly)",
+			"auto_deleteDescription": "True: Delete the thread automatically when deleting the parent message, False: off",
+			"maxNames": "Thread names must be under 16 charactars",
+			"premiumTier": "autoArchiveDuration above 24 hours only available for guilds with tier 2 and above",
+			"autoArchiveDurationFlags": {
+				"instantly": "instantly"
+			},
+			"options": "\n**Names:** `{names}` \n**Auto Archive Duration:** `{autoArchiveDurationFlag}`\n**Auto Delete:** `{autoDelete}`"
+		},
+		"off": {
+			"description": "Turn the shit off"
+		},
+		"response": "Auto threads `{toggle}`{options}"
+	},
+	"blacklist": {
+		"description": "Disable commands in a channel",
+		"booleanDescription": "True: on, False: off",
+		"added": "Added <#{channel}> to blacklist\n`-` Management commands always enabled",
+		"removed": "Removed <#{channel}> from blacklist"
+	},
+	"slowmode": {
+		"description": "Manage slowmode in a channel",
+		"auto": {
+			"description": "Set slowmode automatically when creating a thread in this channel",
+			"timeoutDescription": "Slowmode duration",
+			"timeoutFlags": {
+				"sync": "sync"
+			},
+			"toggleDescription": "True: on, False: off (default: toggle)",
+			"timeoutOption": "\nTimeout: `{timeoutFlag}`",
+			"response": "Auto Slowmode: `{toggle}`{options}"
+		},
+		"set": {
+			"description": "change slowmode in a channel",
+			"timeoutDescription": "Slowmode duration",
+			"minTimeout": "timeout must be above -1",
+			"reason": "Set slowmode command used by: {user}",
+			"response": "Slowmode: `{timeout}`"
+		}
+	},
+	"threads": {
+		"autoRateLimitPerUserReason": "Automation by imagine a bot:\nAuto sync threads slowmode"
+	},
+	"help": {
+		"description": "help.description"
+	},
+	"autoThreads": {
+		"description": "autoThreads.description",
+		"on": {
+			"description": "autoThreads.on.description",
+			"namesDescription": "autoThreads.on.namesDescription",
+			"durationDescription": "autoThreads.on.durationDescription",
+			"autoArchiveDurationFlags": {
+				"instantly": "autoThreads.on.autoArchiveDurationFlags.instantly"
+			},
+			"auto_deleteDescription": "autoThreads.on.auto_deleteDescription"
+		},
+		"off": {
+			"description": "autoThreads.off.description"
+		}
+	},
+	"add": {
+		"description": "add.description"
+	},
+	"tickets": {
+		"description": "tickets.description"
+	}
 }

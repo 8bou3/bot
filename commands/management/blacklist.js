@@ -4,16 +4,17 @@ const { deleteElements } = require("../../functions/deleteElements");
 module.exports = {
   name: "blacklist",
   usage: "<boolean: toggle>",
+  cooldown: 15,
   management: true,
   guild: true,
   permissions: ["MANAGE_CHANNELS"],
-  runPermissions: ["EMBED_LINKS", "SEND_MESSAGES"],
+  runPermissions: ["SEND_MESSAGES"],
   description: i18n.__("blacklist.description"),
   options: [
     {
       type: 5,
       name: "boolean",
-      description: "True: on, False: off",
+      description: i18n.__("blacklist.booleanDescription"),
     },
   ],
   async execute(interaction, Data) {
@@ -37,11 +38,11 @@ module.exports = {
 
     if (toggle)
       interaction.editReply(
-        `Added \`${interaction.channel.name}\` to blacklist`
+        i18n.__mf("blacklist.added", { channel: interaction.channelId })
       );
     else
       interaction.editReply(
-        `Removed \`${interaction.channel.name}\` from blacklist`
+        i18n.__mf("blacklist.removed", { channel: interaction.channelId })
       );
   },
 };

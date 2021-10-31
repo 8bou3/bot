@@ -3,6 +3,7 @@ const ticketModel = require("../../models/ticket");
 
 module.exports = {
   name: "delete",
+  disabled: true,
   guild: true,
   support: true,
   runPermissions: ["EMBED_LINKS", "SEND_MESSAGES", "MANAGE_CHANNELS"],

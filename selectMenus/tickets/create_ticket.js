@@ -4,6 +4,7 @@ const ticketModel = require("../../models/ticket");
 
 module.exports = {
   customId: "create_ticket",
+  disabled: true,
   async select(interaction, Data) {
     if (!Data.guild.tickets?.mode)
       return interaction.editReply(
@@ -23,12 +24,16 @@ module.exports = {
     const openTicketMessage = await messagesChannel?.messages.fetch(
       Data.guild.tickets.messages.openTicket
     );
-    const channel = interaction.guild.channels.cache.get(Data.guild.tickets.channel);
+    const channel = interaction.guild.channels.cache.get(
+      Data.guild.tickets.channel
+    );
     if (!channel)
       return interaction.editReply(
         "**Error:**\n> No tickets channel `selectMenus(create_ticket)`\n\n||Report this to the support: https://discord.gg/YywkMTmHHb||"
       );
-    const parent = interaction.guild.channels.cache.get(Data.guild.tickets.parent);
+    const parent = interaction.guild.channels.cache.get(
+      Data.guild.tickets.parent
+    );
     if (!parent)
       return interaction.editReply(
         "**Error:**\n> No parent channel `selectMenus(create_ticket)`\n\n||Report this to the support: https://discord.gg/YywkMTmHHb||"
@@ -44,15 +49,9 @@ module.exports = {
       if (Date.now() < expirationTime) {
         const timeLeft = (expirationTime - Date.now()) / 1000;
         return interaction.editReply({
-          embeds: [
-            {
-              color: `${Data.color}`,
-              description: i18n.__mf("embeds.tickets.cooldown.description", {
-                timeLeft: timeLeft.toFixed(1),
-              }),
-              title: i18n.__("embeds.tickets.cooldown.title"),
-            },
-          ],
+          content: i18n.__mf("tickets.cooldown", {
+            timeLeft: timeLeft.toFixed(1),
+          }),
           ephemeral: true,
         });
       } else timestamps.delete(interaction.user.id);
@@ -115,7 +114,7 @@ module.exports = {
       status: "open",
       members: [interaction.user.id],
     });
-    Data.guild.tickets.counter += 1;
+    Data.guild.tickets.counter++;
     Data.ticket.save();
     Data.guild.save();
 

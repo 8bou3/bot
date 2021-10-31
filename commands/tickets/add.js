@@ -4,6 +4,7 @@ const ticketModel = require("../../models/ticket");
 module.exports = {
   name: "add",
   usage: "<user>",
+  disabled: true,
   guild: true,
   runPermissions: ["EMBED_LINKS", "SEND_MESSAGES", "MANAGE_CHANNELS"],
   description: i18n.__("add.description"),

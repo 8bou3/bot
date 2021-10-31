@@ -12,13 +12,23 @@ module.exports = {
 
     if (!Data.guild) return;
 
-    if (
-      Data.guild.channels.syncSlowmode.includes(thread.parentId) &&
-      thread.parent.rateLimitPerUser
-    )
+    if (Data.guild.channels.slowmode.ids.includes(thread.parentId)) {
+      let timeout =
+        Data.guild.channels.slowmode.options[
+          Data.guild.channels.slowmode.ids.indexOf(thread.parentId)
+        ].timeout;
+      if (timeout === 0) timeout = thread.parent.rateLimitPerUser;
       thread.setRateLimitPerUser(
-        thread.parent.rateLimitPerUser,
-        i18n.__("threads.syncRateLimitPerUserReason")
+        timeout,
+        i18n.__("threads.autoRateLimitPerUserReason")
       );
+    }
+
+    if (Data.guild.channels.autoThreads.ids.includes(thread.parentId))
+      Data.guild.channels.autoThreads.options[
+        Data.guild.channels.autoThreads.ids.indexOf(thread.parentId)
+      ].autoArchiveDuration === 1
+        ? thread.setArchived(true)
+        : undefined;
   },
 };

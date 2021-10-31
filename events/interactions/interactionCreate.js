@@ -21,10 +21,10 @@ module.exports = {
       }
     }
 
-    Data.color = Data.guild?.color ? Data.guild.color : "#000000";
+    Data.color = "#000000";
     Data.language = Data.guild?.language ? Data.guild.language : "en";
 
-    i18n.setLocale("en");
+    i18n.setLocale(Data.language);
 
     switch (true) {
       case interaction.isCommand():
@@ -43,7 +43,7 @@ module.exports = {
             !command.management
           )
             return interaction.reply({
-              content: "Not allowed to use commands here",
+              content: i18n.__("command.blacklistChannel"),
               ephemeral: true,
             });
           if (
@@ -68,7 +68,8 @@ module.exports = {
             )
           )
             return interaction.reply({
-              content: i18n.__mf("command.missingRole", {
+              content: i18n.__mf("command.missingPermission", {
+                user: interaction.member.id,
                 command: command.name,
                 permissions: command.permissions.join("` `"),
               }),
@@ -108,16 +109,10 @@ module.exports = {
           if (Data.receivedTime < expirationTime) {
             const timeLeft = (expirationTime - Data.receivedTime) / 1000;
             return interaction.reply({
-              embeds: [
-                {
-                  color: `${Data.color}`,
-                  description: i18n.__mf("embeds.cooldown.description", {
-                    command: command.name,
-                    timeLeft: timeLeft.toFixed(1),
-                  }),
-                  title: i18n.__("embeds.cooldown.title"),
-                },
-              ],
+              content: i18n.__mf("command.cooldown", {
+                command: command.name,
+                timeLeft: timeLeft.toFixed(2),
+              }),
               ephemeral: true,
             });
           } else timestamps.delete(interaction.user.id);
@@ -139,8 +134,8 @@ module.exports = {
           );
           console.error(error);
           interaction.channel.send(
-            i18n.__mf("error.executingCommand", {
-              commandName: command.name,
+            i18n.__mf("error.message", {
+              process: `executing the ${command.name} command`,
               errorMessage: error,
             })
           );
@@ -159,7 +154,7 @@ module.exports = {
         );
         if (!button || button.disabled)
           return interaction.editReply({
-            content: i18n.__("error.notButton"),
+            content: i18n.__("button.notButton"),
             ephemeral: true,
           });
 
@@ -174,8 +169,8 @@ module.exports = {
           );
           console.error(error);
           interaction.channel.send(
-            i18n.__mf("error.pressingButton", {
-              buttonCustomId: button.customId,
+            i18n.__mf("error.message", {
+              process: `pressing the ${button.customId} button`,
               errorMessage: error,
             })
           );
@@ -194,7 +189,7 @@ module.exports = {
         );
         if (!selectMenu || selectMenu.disabled)
           return interaction.editReply({
-            content: i18n.__("error.notAnExistingSelectMenu"),
+            content: i18n.__("selectMenu.notSelectMenu"),
             ephemeral: true,
           });
 
@@ -209,8 +204,8 @@ module.exports = {
           );
           console.error(error);
           interaction.channel.send(
-            i18n.__mf("error.selectingMenu", {
-              selectMenuCustomId: selectMenu.customId,
+            i18n.__mf("error.message", {
+              process: `selecting an option in the ${selectMenu.customId} select menuu`,
               errorMessage: error,
             })
           );

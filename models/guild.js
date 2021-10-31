@@ -31,10 +31,15 @@ module.exports = model(
     channels: {
       autoThreads: {
         ids: [String],
-        options: [{ names: String, autoArchiveDuration: Number }],
+        options: [
+          { names: String, autoArchiveDuration: Number, autoDelete: Boolean },
+        ],
+      },
+      slowmode: {
+        ids: [String],
+        options: [{ timeout: Number }],
       },
       autoCrosspost: [String],
-      syncSlowmode: [String],
       blacklist: [String],
     },
 
