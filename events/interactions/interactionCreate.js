@@ -55,6 +55,7 @@ module.exports = {
             return interaction.reply({
               content: i18n.__mf("command.missingPermission", {
                 user: interaction.member.id,
+                command: command.name,
                 channel: interaction.channel.id,
                 permissions: command.permissions.join("` `"),
               }),
@@ -70,6 +71,7 @@ module.exports = {
             return interaction.reply({
               content: i18n.__mf("command.missingPermission", {
                 user: interaction.member.id,
+                command: command.name,
                 channel: interaction.channel.id,
                 permissions: command.permissions.join("` `"),
               }),
@@ -85,6 +87,7 @@ module.exports = {
             return interaction.reply({
               content: i18n.__mf("command.missingPermission", {
                 user: interaction.client.user,
+                command: command.name,
                 channel: interaction.channel.id,
                 permissions: command.runPermissions.join("` `"),
               }),
