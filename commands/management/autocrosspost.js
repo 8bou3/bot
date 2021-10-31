@@ -9,7 +9,7 @@ module.exports = {
   management: true,
   guild: true,
   permissions: ["MANAGE_MESSAGES", "SEND_MESSAGES"],
-  runPermissions: ["SEND_MESSAGES", "MANAGE_MESSAGES"],
+  runPermissions: ["MANAGE_MESSAGES"],
   options: [
     {
       type: 5,

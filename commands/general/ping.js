@@ -3,7 +3,6 @@ const Mongoose = require("mongoose");
 
 module.exports = {
   name: "ping",
-  runPermissions: ["SEND_MESSAGES"],
   description: i18n.__("ping.description"),
   execute(interaction, Data) {
     interaction.reply("wait...").then(async (sent) => {

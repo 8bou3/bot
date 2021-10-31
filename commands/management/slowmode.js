@@ -8,8 +8,8 @@ module.exports = {
   cooldown: 15,
   management: true,
   guild: true,
-  permissions: ["MANAGE_THREADS"],
-  runPermissions: ["SEND_MESSAGES", "MANAGE_THREADS"],
+  permissions: ["MANAGE_THREADS", "MANAGE_CHANNELS", "MANAGE_MESSAGES"],
+  runPermissions: ["MANAGE_CHANNELS", "MANAGE_THREADS"],
   description: i18n.__("slowmode.description"),
   options: [
     {

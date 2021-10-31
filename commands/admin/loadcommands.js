@@ -5,7 +5,6 @@ module.exports = {
   name: "loadcommands",
   aliases: ["loadslash"],
   hidden: true,
-  runPermissions: ["SEND_MESSAGES"],
   description: i18n.__("loadcommands.description"),
   async execute(interaction) {
     if ("617807550993268737" !== interaction.user.id) return;

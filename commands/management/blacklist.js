@@ -8,7 +8,6 @@ module.exports = {
   management: true,
   guild: true,
   permissions: ["MANAGE_CHANNELS"],
-  runPermissions: ["SEND_MESSAGES"],
   description: i18n.__("blacklist.description"),
   options: [
     {

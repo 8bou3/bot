@@ -9,7 +9,7 @@ module.exports = {
   management: true,
   guild: true,
   permissions: ["MANAGE_THREADS", "MANAGE_MESSAGES", "SEND_MESSAGES"],
-  runPermissions: ["MANAGE_THREADS", "SEND_MESSAGES", "MANAGE_MESSAGES"],
+  runPermissions: ["MANAGE_THREADS","MANAGE_MESSAGES"],
   description: i18n.__("autoThreads.description"),
   options: [
     {
