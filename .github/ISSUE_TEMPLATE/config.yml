@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Imagine a bot Support Discord server
+    url: https://discord.gg/YywkMTmHHb
+    about: If you need help with Imagine a bot self-hosting or usage, please ask for help here
+  - name: Crowdin localization management
+    url: https://crowdin.com/translate/imagine-a-bot
+    about: Please report localization & typo here
