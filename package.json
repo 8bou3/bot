@@ -1,15 +1,17 @@
 {
-  "name": "@8bou3/imagine-a-bot",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Discord bot",
+  "name": "imagine-a-bot",
+  "version": "1.0.1",
+  "description": "Discord bot to organize and manage Discord servers.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "keywords": [
     "discord",
-    "bot"
+    "bot",
+    "javascript",
+    "discord-js",
+    "js"
   ],
   "author": "8bou3",
   "license": "MIT",
