@@ -12,7 +12,7 @@
     "bot"
   ],
   "author": "8bou3",
-  "license": "gpl-3.0",
+  "license": "MIT",
   "dependencies": {
     "discord.js": "^13.x",
     "dotenv": "^10.0.0",
