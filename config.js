@@ -14,6 +14,6 @@ module.exports = {
     },
     token: process.env.TOKEN,
   },
-  mongoPath: process.env.MONGO_PATH,
+  mongoPath: process.env.MONGO_URI,
   locales: ["en", "ar"],
 };
