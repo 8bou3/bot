@@ -38,7 +38,7 @@ module.exports = {
           .filter((file) => file.split(".").pop() === "js");
         for (const file of commandFiles) {
           const command = require(`../../commands/${folder}/${file}`);
-          if (command.hidden || command.disabled) continue; //Continue if the command hidden/disabled
+          if (command.disabled) continue; //Continue if the command disabled
           if (
             command.permissions &&
             !interaction.channel

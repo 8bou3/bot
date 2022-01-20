@@ -4,7 +4,6 @@ const fs = require("fs");
 module.exports = {
   name: "loadcommands",
   aliases: ["loadslash"],
-  hidden: true,
   description: i18n.__("loadcommands.description"),
   async execute(interaction) {
     if ("617807550993268737" !== interaction.user.id) return;
@@ -14,7 +13,6 @@ module.exports = {
       await interaction.client.application?.fetch();
 
     let data = [];
-    let hiddenData = [];
     let i = 0;
 
     const commandFolders = fs.readdirSync("./commands");
@@ -31,8 +29,7 @@ module.exports = {
             options: command.options ? command.options : undefined,
           };
           i++;
-          if (command.hidden || command.disabled) hiddenData.push(commandData);
-          else data.push(commandData);
+          if (!command.disabled) data.push(commandData);
         }
       }
     }
